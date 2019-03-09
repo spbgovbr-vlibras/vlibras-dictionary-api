@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+#kubectl expose deployment vlibrasdicionario --port=80 --type=LoadBalancer
+#kubectl autoscale deployment vlibrasdicionario --cpu-percent=70 --min=1 --max=8
+kind: Deployment
+metadata:
+  name: vlibrasdicionario
+  labels:
+    app: vlibrasdicionario
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vlibrasdicionario
+  template:
+    metadata:
+      labels:
+        app: vlibrasdicionario
+    spec:
+      containers:
+        - image: vlibras/dicionario:01
+          name: vlibrasdicionario
+          env:
+            - name: DICIONARIO_URL
+              value: "150.165.204.184"
+            - name: DICIONARIO_PORT
+              value: "8080"
+            - name: BUNDLES_DIR
+              value: "/bundles"
+            - name: PORT
+              value: "80"
+          ports:
+            - containerPort: 80
+              name: vlibras
+          resources:
+            requests:
+              cpu: 600m
+              memory: 1.5Gi
+          #readinessProbe:
+          #  httpGet:
+          #    path: /
+          #    port: 80
+          #  initialDelaySeconds: 30
+          #  periodSeconds: 30
+          volumeMounts:
+            - name: bundles-storage
+              mountPath: /bundles
+      hostNetwork: true
+      volumes:
+        - name: bundles-storage
+          gcePersistentDisk:
+            pdName: dicionario-disk
+            fsType: ext4
+
