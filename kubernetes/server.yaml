@@ -17,7 +17,7 @@ spec:
         app: vlibrasdicionario
     spec:
       containers:
-        - image: vlibras/dicionario:01
+        - image: vlibras/dicionario:02
           name: vlibrasdicionario
           env:
             - name: DICIONARIO_URL
