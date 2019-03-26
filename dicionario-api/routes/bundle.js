@@ -12,5 +12,6 @@ var express = require('express')
  */
 router
     .get('/:version/:platform/:id', bundleController.download)
+    .get('/:version/:platform/:region/:id', bundleController.regionDownload)
 
 module.exports = router;

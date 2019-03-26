@@ -6,9 +6,11 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+//var cors = require('cors');
 
 var routes = require('./routes/bundle');
 var health = require('./routes/healtcheck');
+var signs = require('./routes/signs');
 
 var app = express();
 
@@ -18,14 +20,24 @@ app.set('view engine', 'pug');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
+//app.use(cors);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.disable('etag');
+
+app.use(function(req, res, next) {
+  res.setHeader("Access-Control-Allow-Methods", "POST, GET");
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.use('/', routes);
 app.use('/healthcheck', health);
+app.use('/signs', signs);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
