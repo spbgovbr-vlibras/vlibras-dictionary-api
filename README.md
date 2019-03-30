@@ -154,6 +154,7 @@ Finally, starting the service is made by :
 kubectl apply -f kubernetes/server.yaml
 kubectl expose deployment vlibrasdicionario --port=80 --type=LoadBalancer
 ```
+Note that as happened to MongoDB, You must configure a volume set to be used by it.
 
 
 ## Contributors
