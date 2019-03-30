@@ -18,7 +18,12 @@ class Trie:
 			self.characters_keys[self.characters[i]] = i
 
 	def _key_of(self, item, i):
-		return self.characters_keys[item[i].encode('utf-8')]
+		key = "[INTERROGAÇÃO]"
+		try:
+			key = self.characters_keys[item[i].encode('utf-8')]
+		except:
+			key = "[INTERROGAÇÃO]"
+		return key
 
 	def _add(self, item):
 		node = self.root
@@ -57,8 +62,8 @@ chars = ["'", '$', ',', '_', '%', '-', '0', '1', '2', '3', '4', '5', '6', '7', '
 
 ignore = ["[INTERROGAÇÃO]", "[EXCLAMAÇÃO]", "[PONTO]"]
 
-
 def gen(data):
 	trie = Trie(chars)
 	trie.add(data)
 	return { 'characters': chars, 'keys': trie.characters_keys, 'trie': trie.to_json() }
+

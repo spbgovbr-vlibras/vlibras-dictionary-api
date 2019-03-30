@@ -17,6 +17,29 @@ var fs = require('fs')
 
 var trie = null;
 
+function runPython(){
+    var result = null
+    var spawn = require("child_process").spawn;
+    var process = spawn('python', ["./indexer.py"]);
+    process.stdout.on('data', function (data) {
+        result = data.toString();
+    });
+    return result;
+};
+
+function cmdPython(){
+    const { exec } = require('child_process');
+    exec('python ./indexer.py', {maxBuffer: 1024*10000000}, (err, stdout, stderr) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      //console.log(stdout);
+      trie = stdout;
+      return stdout;
+    });
+};
+
 exports.dicionario = function (req, res, next) {
     if (trie === null)
         exports.load(function (err) {
@@ -29,14 +52,20 @@ exports.dicionario = function (req, res, next) {
         res.status(200).send(trie);
 };
 
-exports.load = function (callback) {
-    var spawn = require("child_process").spawn;
-    var process = spawn('python', ["./indexer.py"]);
-    process.stdout.on('data', function (data) {
-        console.log("teste");
-        console.log(data.toString());
-        trie = data.toString();
+exports.load = async function () {
+
+    //await cmdPython(function(result){
+    //     console.log(result);
+    //     trie = result;
+    //});
+    const { exec } = require('child_process');
+    await exec('python ./indexer.py', {maxBuffer: 1024*10000000}, (err, stdout, stderr) => {
+      if (err) {
+        console.error(err);
+	return;
+      }
+      console.log(stdout);
+      trie = stdout;
     });
-    if (callback)
-        callback();
+    //console.log("teste " + trie);
 };
