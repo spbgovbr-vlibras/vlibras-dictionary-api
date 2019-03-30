@@ -129,7 +129,7 @@ Accomplishing this task change to datacenter to another. Acess all links above t
 ### Instalation
 
 
-If you already MongoDB and RabbitMQ running on your cluster, skip those steps.
+If you already MongoDB running on your cluster, skip the next step.
 
 Once kubectl is installed and set, run the following commands:
 
@@ -139,19 +139,9 @@ kubectl expose rc mongo-controller --type=ClusterIP
 ```
 These commands will start the MongoDB pods. You must configure a volume set to be used by it. By default it set to be used in a Google Cloud Plataform (GCP)
 
-```sh
-kubectl apply -f kubernetes/rabbitmq.yaml
-kubectl expose deployment rabbitmq --type=ClusterIP
-```
-Following, this line starts up the RabbitMQ pod. As it happened to MongoDB, you must configure a volume set or use the default of a GCP.
-
 Then , open the file server.yaml and edit these enviroment variables to match yours.
 
 ```sh
-- name: AMQP_HOST
-  value: "RabbitMQ-ClusterIP"
-- name: AMQP_PORT
-  value: "RabbitMQ-Port"
 - name: DB_HOST
   value: "MongoDB-ClusterIP"
 - name: DB_PORT
