@@ -98,7 +98,7 @@ sudo apt install -y rabbitmq-server
 After installing all the prerequisites, install the project by running the command:
 
 ```sh
-cd api/
+cd dicionario-api/
 ```
 
 ```sh
@@ -108,7 +108,7 @@ npm install
 To test the installation, simply start the translation API with the following command:
 
 ```sh
-cd api/
+cd dicionario-api/
 ```
 
 ```sh
@@ -117,7 +117,7 @@ npm start
 
 ## Documentation
 
-In writing process.
+> In writing process.
 
 ## Deployment
 
@@ -160,7 +160,6 @@ Note that as happened to MongoDB, You must configure a volume set to be used by 
 ## Contributors
 
 * Jonathan Brilhante - <jonathan.brilhante@lavid.ufpb.br>
-* Wesnydy Ribeiro - <wesnydy@lavid.ufpb.br>
 
 ## License
 
