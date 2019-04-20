@@ -1,6 +1,7 @@
 import express from 'express';
 import { check } from 'express-validator/check';
 import { downloader, regionDownloader } from '../controllers/bundleDownloader';
+import toUpperCaseSanitizer from '../helpers/sanitizer';
 
 const downloaderRouter = express.Router();
 
@@ -12,21 +13,17 @@ const dictRegions = [
 	"RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"
 ];
 
-const toUpperCaseSanitize = function(value) {
-  return typeof value === 'string' ? value.toUpperCase() : value;
-}
-
 downloaderRouter
   .get('/:version/:platform/:sign', [
     check('version').isIn(dictVersions),
-    check('platform').customSanitizer(toUpperCaseSanitize).isIn(dictPlatforms),
-    check('sign').not().isEmpty().customSanitizer(toUpperCaseSanitize)
+    check('platform').customSanitizer(toUpperCaseSanitizer).isIn(dictPlatforms),
+    check('sign').not().isEmpty().customSanitizer(toUpperCaseSanitizer)
   ], downloader)
   .get('/:version/:platform/:region/:sign', [
     check('version').isIn(dictVersions),
-    check('platform').customSanitizer(toUpperCaseSanitize).isIn(dictPlatforms),
-    check('region').customSanitizer(toUpperCaseSanitize).isIn(dictRegions),
-    check('sign').not().isEmpty().customSanitizer(toUpperCaseSanitize)
+    check('platform').customSanitizer(toUpperCaseSanitizer).isIn(dictPlatforms),
+    check('region').customSanitizer(toUpperCaseSanitizer).isIn(dictRegions),
+    check('sign').not().isEmpty().customSanitizer(toUpperCaseSanitizer)
   ], regionDownloader);
 
 export default downloaderRouter;
