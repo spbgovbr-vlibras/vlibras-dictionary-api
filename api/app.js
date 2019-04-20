@@ -1,77 +1,45 @@
-﻿'use strict';
-var debug = require('debug');
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-//var cors = require('cors');
+import createError from 'http-errors';
+import dotenv from 'dotenv';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import cors from 'cors';
+import helmet from 'helmet';
 
-var routes = require('./routes/bundle');
-var health = require('./routes/healtcheck');
-var signs = require('./routes/signs');
+import env from './config/environments/environment';
+dotenv.config({ path: env() });
 
-var app = express();
+import apiDocRouter from './routes/apiDoc';
+import healthRouter from './routes/healthCheck';
+import bundleDownloader from './routes/bundleDownloader';
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+const app = express();
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
-//app.use(cors);
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
+app.use(helmet());
+app.use(logger(process.env.LOGGER_FORMAT));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-app.disable('etag');
 
-app.use(function(req, res, next) {
-  res.setHeader("Access-Control-Allow-Methods", "POST, GET");
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
-
-app.use('/', routes);
-app.use('/healthcheck', health);
-app.use('/signs', signs);
+app.use('/', apiDocRouter);
+app.use('/', healthRouter);
+app.use('/', bundleDownloader);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
+app.use((req, res, next) => {
+	next(createError(404));
 });
 
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function (err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function (err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+// error handler
+app.use((err, req, res, next) => {
+	res.status(err.status || 500);
+	if(app.get('env') === 'dev') {
+		console.error('\x1b[2m', err);
+		res.json({ error : err });
+	} else {
+		res.json({ error : err });
+	}
 });
 
-app.set('port', process.env.PORT || 3000);
-
-var server = app.listen(app.get('port'), function () {
-    debug('Express server listening on port ' + server.address().port);
-});
+export default app;
