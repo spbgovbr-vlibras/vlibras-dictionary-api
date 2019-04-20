@@ -6,6 +6,7 @@ import { validationResult } from 'express-validator/check';
 import Bundle from '../models/bundle';
 
 const updateDict = async function updateDictionary(version, platform, sign, region) {
+	
 	let bundleURL = new URL(`${version}/${platform}/${sign}`, process.env.MAIN_DICT_DNS);
 
 	if (region !== undefined) {
@@ -32,7 +33,7 @@ const updateDict = async function updateDictionary(version, platform, sign, regi
 }
 
 const downloader = async function bundleDownloader(req, res, next) {
-
+	
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
@@ -82,7 +83,7 @@ const downloader = async function bundleDownloader(req, res, next) {
 }
 
 const regionDownloader = async function regionBundleDownloader(req, res, next) {
-
+	
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
@@ -100,33 +101,37 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 			process.env.BUNDLES_DIR,
 			req.params.version,
 			req.params.platform,
-			req.params.sign,
-			req.params.region
+			req.params.region,
+			req.params.sign
 		);
 
 		fs.access(bundleFile, fs.F_OK, async (err) => {
 			if (err) {
 				try {
-					const result = await updateDict(
-						// req.params.version,
-						"3_3_1",
-						req.params.platform,
-						req.params.region,
-						req.params.sign
+					await updateDict(
+						req.params.version, 
+						req.params.platform, 
+						req.params.sign, 
+						req.params.region
 					);
-
-					console.log(result);
+					
+					res.download(bundleFile);
+					bundleRequest.available = true;
 					
 				} catch (error) {
+					bundleRequest.available = false;
 					next(error);
+
+				} finally {
+					await bundleRequest.save();
 				}
 			
 			} else {
 				res.download(bundleFile);
 				bundleRequest.available = true;
 				await bundleRequest.save();
-
 			}
+
 		});
 		
 	} catch (error) {
