@@ -22,8 +22,8 @@ const updateDict = async function updateDictionary(version, platform, sign, regi
 		response.data.pipe(streamWriter)
 
 		return new Promise((resolve, reject) => {
-			streamWriter.on('finish', resolve(localBundlePath));
-			streamWriter.on('error', reject(createError(404)));
+			streamWriter.on('finish', () => { resolve(localBundlePath) });
+			streamWriter.on('error', () => { reject(createError(404)) });
 		});
 
 	} catch (error) {
@@ -46,7 +46,7 @@ const downloader = async function bundleDownloader(req, res, next) {
 			requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress
 		});
 
-		const bundleFile = path.join(
+		let bundleFile = path.join(
 			process.env.BUNDLES_DIR,
 			req.params.version,
 			req.params.platform,
@@ -56,7 +56,12 @@ const downloader = async function bundleDownloader(req, res, next) {
 		fs.access(bundleFile, fs.F_OK, async (err) => {
 			if (err) {
 				try {
-					await updateDict(req.params.version, req.params.platform, req.params.sign);
+					bundleFile = await updateDict(
+						req.params.version,
+						req.params.platform,
+						req.params.sign
+					);
+
 					res.download(bundleFile);
 					bundleRequest.available = true;
 					
@@ -97,7 +102,7 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 			requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress
 		});
 
-		const bundleFile = path.join(
+		let bundleFile = path.join(
 			process.env.BUNDLES_DIR,
 			req.params.version,
 			req.params.platform,
@@ -108,7 +113,7 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 		fs.access(bundleFile, fs.F_OK, async (err) => {
 			if (err) {
 				try {
-					await updateDict(
+					bundleFile = await updateDict(
 						req.params.version, 
 						req.params.platform, 
 						req.params.sign, 
@@ -120,8 +125,13 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 					
 				} catch (error) {
 					bundleRequest.available = false;
-					next(error);
-
+					
+					try {
+						await downloader(req, res, next);
+					} catch (error) {
+						next(error);
+					}
+					
 				} finally {
 					await bundleRequest.save();
 				}
