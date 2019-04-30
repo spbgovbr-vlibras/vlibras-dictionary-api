@@ -16,7 +16,7 @@ const updateDict = async function updateDictionary(version, platform, sign, regi
 	try {
 		const response = await axios.get(bundleURL.href, { responseType: 'stream' });
 
-		const localBundlePath = path.join(process.env.BUNDLES_DIR, bundleURL.pathname);
+		const localBundlePath = path.join(process.env.BUNDLES_DIR, decodeURI(bundleURL.pathname));
 		const streamWriter = fs.createWriteStream(localBundlePath);
 
 		response.data.pipe(streamWriter)
@@ -125,7 +125,7 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 					
 				} catch (error) {
 					bundleRequest.available = false;
-					
+
 					try {
 						await downloader(req, res, next);
 					} catch (error) {
