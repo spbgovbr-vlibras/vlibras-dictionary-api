@@ -19,7 +19,7 @@ const updateDict = async function updateDictionary(version, platform, sign, regi
 		const localBundlePath = path.join(process.env.BUNDLES_DIR, decodeURI(bundleURL.pathname));
 		const streamWriter = fs.createWriteStream(localBundlePath);
 
-		response.data.pipe(streamWriter)
+		response.data.pipe(streamWriter);
 
 		return new Promise((resolve, reject) => {
 			streamWriter.on('finish', () => { resolve(localBundlePath) });
