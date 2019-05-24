@@ -12,6 +12,7 @@ dotenv.config({ path: env() });
 import apiDocRouter from './routes/apiDoc';
 import healthRouter from './routes/healthCheck';
 import bundleDownloader from './routes/bundleDownloader';
+import bundleIndexer from './routes/bundleIndexer';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use('/', apiDocRouter);
 app.use('/', healthRouter);
 app.use('/', bundleDownloader);
+app.use('/', bundleIndexer);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
