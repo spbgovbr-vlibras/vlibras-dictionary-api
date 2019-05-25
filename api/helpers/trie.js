@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 let Node = function() {
 	this.children = new Map();
 	this.isEnd = false;
@@ -27,10 +29,10 @@ Trie.prototype.toJSON = function() {
     const search = function(node, jsonNode) {
 		jsonNode.end = node.isEnd;
 
-		for (const key of node.children.keys()) {
-			jsonNode.children[key] = { children: {}, end: false	};
-			search(node.children.get(key), jsonNode.children[key]);
-		}
+			for (const key of node.children.keys()) {
+				jsonNode.children[key] = { children: {}, end: false	};
+				search(node.children.get(key), jsonNode.children[key]);
+			}
     };
 
 	search(this.root, trieObject);
@@ -39,20 +41,23 @@ Trie.prototype.toJSON = function() {
 
 let jsonPrefixTree;
 
-const buildTrie = function buildPrefixTree(signsList) {
+const buildTrie = function buildPrefixTree() {
 	return new Promise((resolve, reject) => {
-		if (!Array.isArray(signsList)) {
-			return reject('Invalid type of signsList');
-		}
+		fs.readFile(process.env.BUNDLES_LIST, 'utf8', (error, data) => {
+			if (error) {
+				return reject(error);
+			}
+			
+			let prefixTree = new Trie();
+			const bundlesList = data.split('\n');
 
-		let prefixTree = new Trie();
+			for (let i = 0; i < bundlesList.length; i++) {
+				prefixTree.addWord(bundlesList[i]);
+			}
 
-		for (let i = 0; i < signsList.length; i++) {
-			prefixTree.addWord(signsList[i]);
-		}
-
-		jsonPrefixTree = prefixTree.toJSON();
-		resolve();
+			jsonPrefixTree = prefixTree.toJSON();
+			resolve();
+		});
 	});
 };
 

@@ -9,6 +9,8 @@ import db from '../db';
 import debug from 'debug';
 import http from 'http';
 
+import { buildTrie } from '../helpers/trie';
+
 const serverDebug = debug('vlibras-dictionary:api')
 
 /**
@@ -25,16 +27,21 @@ app.set('port', port);
 const server = http.createServer(app);
 
 /**
- * Connect to database and listen on provided port, on all network interfaces.
+ * Build the prefix tree, connect to database 
+ * and listen on provided port, on all network interfaces.
  */
 
-db().then(() => {
-  serverDebug(`Connected to ${process.env.DB_NAME}`);
-	server.listen(port);
+serverDebug('starting');
+buildTrie().then(() => {
+  serverDebug('prefix tree built');
+  return db();
+}).then(() => {
+  serverDebug(`connected to ${process.env.DB_NAME}`);
+  server.listen(port);
   server.on('error', onError);
   server.on('listening', onListening);
-}).catch(error => {
-	console.error(error.message);
+}).catch( error => {
+  console.error(error.message);
 });
 
 /**
@@ -94,5 +101,5 @@ function onListening() {
   const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-    serverDebug(`Listening on ${bind}`);
+    serverDebug(`listening on ${bind}`);
 }
