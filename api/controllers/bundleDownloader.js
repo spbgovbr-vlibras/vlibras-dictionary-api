@@ -6,7 +6,7 @@ import { validationResult } from 'express-validator/check';
 import Bundle from '../models/bundle';
 
 const updateDict = async function updateDictionary(version, platform, sign, region) {
-	
+
 	let bundleURL = new URL(`${version}/${platform}/${sign}`, process.env.MAIN_DICT_DNS);
 
 	if (region !== undefined) {
@@ -29,11 +29,11 @@ const updateDict = async function updateDictionary(version, platform, sign, regi
 	} catch (error) {
 		throw createError(404, error.message);
 	}
-	
+
 }
 
 const downloader = async function bundleDownloader(req, res, next) {
-	
+
 	const errors = validationResult(req);
 
 	if (!errors.isEmpty()) {
@@ -64,7 +64,7 @@ const downloader = async function bundleDownloader(req, res, next) {
 
 					res.download(bundleFile);
 					bundleRequest.available = true;
-					
+
 				} catch (error) {
 					bundleRequest.available = false;
 					next(error);
@@ -72,7 +72,7 @@ const downloader = async function bundleDownloader(req, res, next) {
 				} finally {
 					await bundleRequest.save();
 				}
-			
+
 			} else {
 				res.download(bundleFile);
 				bundleRequest.available = true;
@@ -84,7 +84,7 @@ const downloader = async function bundleDownloader(req, res, next) {
 	} catch (error) {
 		next(error);
 	}
-	
+
 }
 
 const regionDownloader = async function regionBundleDownloader(req, res, next) {
@@ -119,10 +119,10 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 						req.params.sign, 
 						req.params.region
 					);
-					
+
 					res.download(bundleFile);
 					bundleRequest.available = true;
-					
+
 				} catch (error) {
 					bundleRequest.available = false;
 
@@ -131,11 +131,11 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 					} catch (error) {
 						next(error);
 					}
-					
+
 				} finally {
 					await bundleRequest.save();
 				}
-			
+
 			} else {
 				res.download(bundleFile);
 				bundleRequest.available = true;
@@ -143,11 +143,11 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 			}
 
 		});
-		
+
 	} catch (error) {
 		next(error);
 	}
-	
+
 }
 
 export { downloader, regionDownloader };

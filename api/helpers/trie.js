@@ -24,16 +24,16 @@ Trie.prototype.addWord = function(word, node=this.root) {
 }
 
 Trie.prototype.toJSON = function() {
-	let trieObject = { children: {}, end: false	};
+	let trieObject = { children: {}, end: false };
 	
-    const search = function(node, jsonNode) {
+		const search = function(node, jsonNode) {
 		jsonNode.end = node.isEnd;
 
 			for (const key of node.children.keys()) {
-				jsonNode.children[key] = { children: {}, end: false	};
+				jsonNode.children[key] = { children: {}, end: false };
 				search(node.children.get(key), jsonNode.children[key]);
 			}
-    };
+		};
 
 	search(this.root, trieObject);
 	return { 'root': trieObject };
@@ -47,7 +47,7 @@ const buildTrie = function buildPrefixTree() {
 			if (error) {
 				return reject(error);
 			}
-			
+
 			let prefixTree = new Trie();
 			const bundlesList = data.split('\n');
 
@@ -66,9 +66,9 @@ const getTrie = function getPrefixTree() {
 		if (jsonPrefixTree === undefined) {
 			return reject('Prefix tree not built');
 		}
-		
+
 		resolve(jsonPrefixTree);
-	}); 	
+	});
 };
 
 export { buildTrie, getTrie };

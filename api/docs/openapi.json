@@ -1,277 +1,277 @@
 {
-  "openapi": "3.0.0",
-  "servers": [
-    {
-      "description": "VLibras Dictionary Brazilian Government Server",
-      "url": "http://dicionario.vlibras.gov.br"
-    },
-    {
-      "description": "VLibras Dictionary Localhost server",
-      "url": "http://localhost:3030"
-    }
-  ],
-  "info": {
-    "description": "VLibras Dictionary is an open source API developed for the distribution of VLibras animation files",
-    "version": "1.0.0",
-    "title": "VLibras Dictionary API",
-    "contact": {
-      "email": "vlibras@lavid.ufpb.br"
-    },
-    "license": {
-      "name": "GNU Lesser General Public License v3.0",
-      "url": "https://www.gnu.org/licenses/lgpl-3.0.html"
-    }
-  },
-  "tags": [
-    {
-      "name": "signs",
-      "description": "Download animation files"
-    }
-  ],
-  "paths": {
-    "/{version}/{platform}/{sign}": {
-      "get": {
-        "tags": [
-          "signs"
-        ],
-        "summary": "Download an animation file",
-        "operationId": "downloadNationalSign",
-        "description": "Download an animation file from the national repository",
-        "parameters": [
-          {
-            "name": "version",
-            "in": "path",
-            "description": "Animations player version",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Version"
-            }
-          },
-          {
-            "name": "platform",
-            "in": "path",
-            "description": "Animations player platform",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Platform"
-            }
-          },
-          {
-            "name": "sign",
-            "in": "path",
-            "description": "Animation name",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Sign"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Animation file downloaded",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "$ref": "#/components/schemas/File"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Animation file not found"
-          },
-          "422": {
-            "description": "Invalid value for version|platform param"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/{version}/{platform}/{region}/{sign}": {
-      "get": {
-        "tags": [
-          "signs"
-        ],
-        "summary": "Download an animation file",
-        "operationId": "downloadRegionalSign",
-        "description": "Download an animation file from a specific regional repository",
-        "parameters": [
-          {
-            "name": "version",
-            "in": "path",
-            "description": "Animations player version",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Version"
-            }
-          },
-          {
-            "name": "platform",
-            "in": "path",
-            "description": "Animations player platform",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Platform"
-            }
-          },
-          {
-            "name": "region",
-            "in": "path",
-            "description": "Animation region",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Region"
-            }
-          },
-          {
-            "name": "sign",
-            "in": "path",
-            "description": "Animation name",
-            "required": true,
-            "schema": {
-              "$ref": "#/components/schemas/Sign"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Animation file downloaded",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "$ref": "#/components/schemas/File"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Animation file not found"
-          },
-          "422": {
-            "description": "Invalid value for version|platform|region param"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/signs": {
-      "get": {
-        "tags": [
-          "signs"
-        ],
-        "summary": "Get a list of all animations in the dictionary",
-        "operationId": "getSignsList",
-        "description": "Get a encoded list of all animations in the dictionary repository",
-        "responses": {
-          "200": {
-            "description": "Animations list retrieved",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SignsList"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Version": {
-        "type": "string",
-        "pattern": "^\\d{1}.\\d{1}.\\d{1}$",
-        "enum": [
-          "3.3.1"
-        ]
-      },
-      "Platform": {
-        "type": "string",
-        "enum": [
-          "ANDROID",
-          "IOS",
-          "STANDALONE",
-          "WEBGL"
-        ]
-      },
-      "Region": {
-        "type": "string",
-        "enum": [
-          "AC",
-          "AL",
-          "AP",
-          "AM",
-          "BA",
-          "CE",
-          "DF",
-          "ES",
-          "GO",
-          "MA",
-          "MT",
-          "MS",
-          "MG",
-          "PA",
-          "PB",
-          "PR",
-          "PE",
-          "PI",
-          "RJ",
-          "RN",
-          "RS",
-          "RO",
-          "RR",
-          "SC",
-          "SP",
-          "SE",
-          "TO"
-        ]
-      },
-      "Sign": {
-        "type": "string",
-        "example": "CASA"
-      },
-      "SignsList": {
-        "type": "string",
-        "format": "json",
-        "example": {
-          "root": {
-            "children": {
-              "C": {
-                "children": {
-                  "A": {
-                    "children": {
-                      "S": {
-                        "children": {
-                          "A": {
-                            "children": {},
-                            "end": true
-                          }
-                        },
-                        "end": false
-                      }
-                    },
-                    "end": false
-                  }
-                },
-                "end": false
-              }
-            },
-            "end": false
-          }
-        }
-      },
-      "File": {
-        "type": "string",
-        "format": "binary"
-      }
-    }
-  }
+	"openapi": "3.0.0",
+	"servers": [
+		{
+			"description": "VLibras Dictionary Brazilian Government Server",
+			"url": "http://dicionario.vlibras.gov.br"
+		},
+		{
+			"description": "VLibras Dictionary Localhost server",
+			"url": "http://localhost:3030"
+		}
+	],
+	"info": {
+		"description": "VLibras Dictionary is an open source API developed for the distribution of VLibras animation files",
+		"version": "1.0.0",
+		"title": "VLibras Dictionary API",
+		"contact": {
+			"email": "vlibras@lavid.ufpb.br"
+		},
+		"license": {
+			"name": "GNU Lesser General Public License v3.0",
+			"url": "https://www.gnu.org/licenses/lgpl-3.0.html"
+		}
+	},
+	"tags": [
+		{
+			"name": "signs",
+			"description": "Download animation files"
+		}
+	],
+	"paths": {
+		"/{version}/{platform}/{sign}": {
+			"get": {
+				"tags": [
+					"signs"
+				],
+				"summary": "Download an animation file",
+				"operationId": "downloadNationalSign",
+				"description": "Download an animation file from the national repository",
+				"parameters": [
+					{
+						"name": "version",
+						"in": "path",
+						"description": "Animations player version",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Version"
+						}
+					},
+					{
+						"name": "platform",
+						"in": "path",
+						"description": "Animations player platform",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Platform"
+						}
+					},
+					{
+						"name": "sign",
+						"in": "path",
+						"description": "Animation name",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Sign"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Animation file downloaded",
+						"content": {
+							"application/octet-stream": {
+								"schema": {
+									"$ref": "#/components/schemas/File"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Animation file not found"
+					},
+					"422": {
+						"description": "Invalid value for version|platform param"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/{version}/{platform}/{region}/{sign}": {
+			"get": {
+				"tags": [
+					"signs"
+				],
+				"summary": "Download an animation file",
+				"operationId": "downloadRegionalSign",
+				"description": "Download an animation file from a specific regional repository",
+				"parameters": [
+					{
+						"name": "version",
+						"in": "path",
+						"description": "Animations player version",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Version"
+						}
+					},
+					{
+						"name": "platform",
+						"in": "path",
+						"description": "Animations player platform",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Platform"
+						}
+					},
+					{
+						"name": "region",
+						"in": "path",
+						"description": "Animation region",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Region"
+						}
+					},
+					{
+						"name": "sign",
+						"in": "path",
+						"description": "Animation name",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/Sign"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Animation file downloaded",
+						"content": {
+							"application/octet-stream": {
+								"schema": {
+									"$ref": "#/components/schemas/File"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Animation file not found"
+					},
+					"422": {
+						"description": "Invalid value for version|platform|region param"
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		},
+		"/signs": {
+			"get": {
+				"tags": [
+					"signs"
+				],
+				"summary": "Get a list of all animations in the dictionary",
+				"operationId": "getSignsList",
+				"description": "Get a encoded list of all animations in the dictionary repository",
+				"responses": {
+					"200": {
+						"description": "Animations list retrieved",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SignsList"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal server error"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Version": {
+				"type": "string",
+				"pattern": "^\\d{1}.\\d{1}.\\d{1}$",
+				"enum": [
+					"3.3.1"
+				]
+			},
+			"Platform": {
+				"type": "string",
+				"enum": [
+					"ANDROID",
+					"IOS",
+					"STANDALONE",
+					"WEBGL"
+				]
+			},
+			"Region": {
+				"type": "string",
+				"enum": [
+					"AC",
+					"AL",
+					"AP",
+					"AM",
+					"BA",
+					"CE",
+					"DF",
+					"ES",
+					"GO",
+					"MA",
+					"MT",
+					"MS",
+					"MG",
+					"PA",
+					"PB",
+					"PR",
+					"PE",
+					"PI",
+					"RJ",
+					"RN",
+					"RS",
+					"RO",
+					"RR",
+					"SC",
+					"SP",
+					"SE",
+					"TO"
+				]
+			},
+			"Sign": {
+				"type": "string",
+				"example": "CASA"
+			},
+			"SignsList": {
+				"type": "string",
+				"format": "json",
+				"example": {
+					"root": {
+						"children": {
+							"C": {
+								"children": {
+									"A": {
+										"children": {
+											"S": {
+												"children": {
+													"A": {
+														"children": {},
+														"end": true
+													}
+												},
+												"end": false
+											}
+										},
+										"end": false
+									}
+								},
+								"end": false
+							}
+						},
+						"end": false
+					}
+				}
+			},
+			"File": {
+				"type": "string",
+				"format": "binary"
+			}
+		}
+	}
 }
