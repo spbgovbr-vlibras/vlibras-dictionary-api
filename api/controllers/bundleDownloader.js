@@ -23,11 +23,11 @@ const updateDict = async function updateDictionary(version, platform, sign, regi
 
 		return new Promise((resolve, reject) => {
 			streamWriter.on('finish', () => { resolve(localBundlePath) });
-			streamWriter.on('error', () => { reject(createError(404)) });
+			streamWriter.on('error', () => { reject(createError(500, 'Failed to Fetch Bundle')) });
 		});
 
 	} catch (error) {
-		throw createError(404, error.message);
+		throw createError(404, 'Bundle Not Found');
 	}
 
 }
