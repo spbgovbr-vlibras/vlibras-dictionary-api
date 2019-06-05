@@ -1,4 +1,4 @@
-export const DICT_VERSIONS = ['3.3.1'];
+export const DICT_VERSIONS = ['5.5.1', '2018.3.0'];
 export const DICT_PLATFORMS = ['ANDROID', 'IOS', 'STANDALONE', 'WEBGL'];
 export const DICT_REGIONS = [
 		"AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO",
