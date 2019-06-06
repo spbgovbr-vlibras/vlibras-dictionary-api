@@ -1,41 +1,25 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
 import app from '../app';
 import db from '../db';
 import debug from 'debug';
 import http from 'http';
+import env from '../config/environments/environment';
 import { buildTrie } from '../helpers/trie';
 
 const serverDebug = debug('vlibras-dictionary:api')
 
-/**
- * Get port from environment and store in Express.
- */
-
-const port = normalizePort(process.env.PORT || '3030');
+const port = normalizePort(env.PORT || '3030');
 app.set('port', port);
 
-/**
- * Create HTTP server.
- */
-
 const server = http.createServer(app);
-
-/**
- * Build the prefix tree, connect to database 
- * and listen on provided port, on all network interfaces.
- */
 
 serverDebug('starting');
 buildTrie().then(() => {
 	serverDebug('prefix tree built');
 	return db();
 }).then(() => {
-	serverDebug(`connected to ${process.env.DB_NAME}`);
+	serverDebug(`connected to ${env.DB_NAME}`);
 	server.listen(port);
 	server.on('error', onError);
 	server.on('listening', onListening);
@@ -43,29 +27,19 @@ buildTrie().then(() => {
 	console.error(error.message);
 });
 
-/**
- * Normalize a port into a number, string, or false.
- */
-
 function normalizePort(val) {
 	const port = parseInt(val, 10);
 
 	if (isNaN(port)) {
-		// named pipe
 		return val;
 	}
 
 	if (port >= 0) {
-		// port number
 		return port;
 	}
 
 	return false;
 }
-
-/**
- * Event listener for HTTP server "error" event.
- */
 
 function onError(error) {
 	if (error.syscall !== 'listen') {
@@ -76,7 +50,6 @@ function onError(error) {
 		? 'Pipe ' + port
 		: 'Port ' + port;
 
-	// handle specific listen errors with friendly messages
 	switch (error.code) {
 		case 'EACCES':
 			console.error(`${bind} requires elevated privileges`);
@@ -90,10 +63,6 @@ function onError(error) {
 			throw error;
 	}
 }
-
-/**
- * Event listener for HTTP server "listening" event.
- */
 
 function onListening() {
 	const addr = server.address();

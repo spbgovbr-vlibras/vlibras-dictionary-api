@@ -1,5 +1,4 @@
 import createError from 'http-errors';
-import dotenv from 'dotenv';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
@@ -8,7 +7,6 @@ import compression from 'compression';
 import helmet from 'helmet';
 
 import env from './config/environments/environment';
-dotenv.config({ path: env() });
 
 import apiDocRouter from './routes/apiDoc';
 import healthRouter from './routes/healthCheck';
@@ -20,7 +18,7 @@ const app = express();
 app.use(cors());
 app.use(compression());
 app.use(helmet());
-app.use(logger(process.env.LOGGER_FORMAT));
+app.use(logger(env.LOGGER_FORMAT));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

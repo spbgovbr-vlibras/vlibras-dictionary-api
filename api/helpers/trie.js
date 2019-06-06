@@ -1,4 +1,5 @@
 import fs from 'fs';
+import env from '../config/environments/environment';
 
 let Node = function() {
 	this.children = new Map();
@@ -43,7 +44,7 @@ let jsonPrefixTree;
 
 const buildTrie = function buildPrefixTree() {
 	return new Promise((resolve, reject) => {
-		fs.readFile(process.env.BUNDLES_LIST, 'utf8', (error, data) => {
+		fs.readFile(env.BUNDLES_LIST, 'utf8', (error, data) => {
 			if (error) {
 				return reject(error);
 			}

@@ -3,11 +3,12 @@ import createError from 'http-errors';
 import fs from 'fs';
 import path from 'path';
 import { validationResult } from 'express-validator/check';
+import env from '../config/environments/environment';
 import Bundle from '../models/bundle';
 
 const updateDict = async function updateDictionary(version, platform, sign, region) {
 
-	let bundleURL = new URL(`${version}/${platform}/${sign}`, process.env.MAIN_DICT_DNS);
+	let bundleURL = new URL(`${version}/${platform}/${sign}`, env.MAIN_DICT_DNS);
 
 	if (region !== undefined) {
 		bundleURL.pathname = `${version}/${platform}/${region}/${sign}`;
@@ -16,7 +17,7 @@ const updateDict = async function updateDictionary(version, platform, sign, regi
 	try {
 		const response = await axios.get(bundleURL.href, { responseType: 'stream' });
 
-		const localBundlePath = path.join(process.env.BUNDLES_DIR, decodeURI(bundleURL.pathname));
+		const localBundlePath = path.join(env.BUNDLES_DIR, decodeURI(bundleURL.pathname));
 		const streamWriter = fs.createWriteStream(localBundlePath);
 
 		response.data.pipe(streamWriter);
@@ -47,7 +48,7 @@ const downloader = async function bundleDownloader(req, res, next) {
 		});
 
 		let bundleFile = path.join(
-			process.env.BUNDLES_DIR,
+			env.BUNDLES_DIR,
 			req.params.version,
 			req.params.platform,
 			req.params.sign
@@ -99,11 +100,11 @@ const regionDownloader = async function regionBundleDownloader(req, res, next) {
 		const bundleRequest = new Bundle({
 			name: req.params.sign,
 			region: req.params.region,
-			requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress
+			requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress 
 		});
 
 		let bundleFile = path.join(
-			process.env.BUNDLES_DIR,
+			env.BUNDLES_DIR,
 			req.params.version,
 			req.params.platform,
 			req.params.region,
