@@ -1,9 +1,9 @@
 FROM node
 
-ADD dicionario-api dicionario-api
+ADD api dictionary-api
 
-WORKDIR dicionario-api
+WORKDIR dictionary-api/
 
-RUN npm install
+RUN npm install && npm audit fix
 
-ENTRYPOINT npm start
+ENTRYPOINT npm start --silent
