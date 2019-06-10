@@ -9,7 +9,7 @@ import { buildTrie } from '../helpers/trie';
 
 const serverDebug = debug('vlibras-dictionary:api')
 
-const port = normalizePort(env.PORT || '3030');
+const port = normalizePort(process.env.PORT || env.PORT || '3030');
 app.set('port', port);
 
 const server = http.createServer(app);
