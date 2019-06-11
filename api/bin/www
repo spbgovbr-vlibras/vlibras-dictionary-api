@@ -4,12 +4,11 @@ import app from '../app';
 import db from '../db';
 import debug from 'debug';
 import http from 'http';
-import env from '../config/environments/environment';
 import { buildTrie } from '../helpers/trie';
 
 const serverDebug = debug('vlibras-dictionary:api')
 
-const port = normalizePort(process.env.PORT || env.PORT || '3030');
+const port = normalizePort(process.env.PORT || '3030');
 app.set('port', port);
 
 const server = http.createServer(app);
@@ -19,7 +18,7 @@ buildTrie().then(() => {
 	serverDebug('prefix tree built');
 	return db();
 }).then(() => {
-	serverDebug(`connected to ${env.DB_NAME}`);
+	serverDebug(`connected to ${process.env.DB_NAME}`);
 	server.listen(port);
 	server.on('error', onError);
 	server.on('listening', onListening);
