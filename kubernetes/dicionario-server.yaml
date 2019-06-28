@@ -44,7 +44,10 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 20
           volumeMounts:
-            - name: dicionario-bundles
-              mountPath: /dicionario-api/bundles/
+            - name: dicionario-storage
+              mountPath: /exports
+      volumes:
+        - name: dicionario-storage
+          persistentVolumeClaim:
+            claimName: dicionario-bundles
       hostNetwork: true
-
