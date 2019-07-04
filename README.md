@@ -32,10 +32,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### System Requirements
 
-* OS: Ubuntu 18.04.2 LTS (Bionic Beaver)  
-* Processor: -  
-* Memory: -   
-* Storage: -
+* OS: Ubuntu 18.04.2 LTS (Bionic Beaver)
 
 ### Prerequisites
 
@@ -74,23 +71,15 @@ sudo apt install -y mongodb-org
 [RabbitMQ](https://www.rabbitmq.com/)
 
 ```sh
-wget -O - "https://github.com/rabbitmq/signing-keys/releases/download/2.0/rabbitmq-release-signing-key.asc" | sudo apt-key add -
+wget -O - "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey" | sudo apt-key add -
 ```
 
 ```sh
-sudo apt install apt-transport-https
+curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | sudo bash
 ```
 
 ```sh
-echo "deb https://dl.bintray.com/rabbitmq/debian bionic main" | sudo tee /etc/apt/sources.list.d/bintray.rabbitmq.list
-```
-
-```sh
-sudo apt update
-```
-
-```sh
-sudo apt install -y rabbitmq-server
+sudo apt install -y rabbitmq-server --fix-missing
 ```
 
 ### Installing
@@ -98,30 +87,36 @@ sudo apt install -y rabbitmq-server
 After installing all the prerequisites, install the project by running the command:
 
 ```sh
-cd dicionario-api/
+cd api/
 ```
 
 ```sh
 npm install
 ```
 
-To test the installation, simply start the translation API with the following command:
+To test the installation, simply start the dictionary API with the following command:
 
 ```sh
-cd dicionario-api/
+cd api/
 ```
 
 ```sh
-npm start
+npm run dev
 ```
 
 ## Documentation
 
-> In writing process.
+To access the documentation and usage examples of the VLibras Dictionary API, start the dictionary server in your localhost and open a browser with the following link:
+
+```
+http://localhost:3030/docs
+```
 
 ## Deployment
 
-### Prerequisites
+> In writing process
+
+<!-- ### Prerequisites
 
 To fully deployment this application its necessary to have instaled and configurated the Docker Engine (https://www.docker.com/) and Kubernetes Container Orchestration (https://kubernetes.io/)
 Accomplishing this task change to datacenter to another. Acess all links above to fullfil your needs. 
@@ -154,17 +149,14 @@ Finally, starting the service is made by :
 kubectl apply -f kubernetes/server.yaml
 kubectl expose deployment vlibrasdicionario --port=80 --type=LoadBalancer
 ```
-Note that as happened to MongoDB, You must configure a volume set to be used by it.
+Note that as happened to MongoDB, You must configure a volume set to be used by it. -->
 
 
 ## Contributors
 
 * Jonathan Brilhante - <jonathan.brilhante@lavid.ufpb.br>
+* Wesnydy Ribeiro - <wesnydy@lavid.ufpb.br>
 
 ## License
 
 This project is licensed under the LGPLv3 License - see the [LICENSE](LICENSE) file for details.
-
-
-
-
