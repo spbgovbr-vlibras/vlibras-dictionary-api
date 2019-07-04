@@ -17,7 +17,7 @@ spec:
         app: dictionaryapi
     spec:
       containers:
-        - image: vlibras/dictionary:08
+        - image: vlibras/dictionary-api:08
           name: dictionaryapi
           env:
             - name: DICTIONARY_URL
@@ -32,7 +32,7 @@ spec:
               value: "27017"
           ports:
             - containerPort: 80
-              name: vlibras-dic2
+              name: vlibras-dictionary-port
           livenessProbe:
             httpGet:
               path: /healthcheck

@@ -66,21 +66,6 @@ sudo apt update
 ```sh
 sudo apt install -y mongodb-org
 ```
-<br/>
-
-[RabbitMQ](https://www.rabbitmq.com/)
-
-```sh
-wget -O - "https://packagecloud.io/rabbitmq/rabbitmq-server/gpgkey" | sudo apt-key add -
-```
-
-```sh
-curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.deb.sh | sudo bash
-```
-
-```sh
-sudo apt install -y rabbitmq-server --fix-missing
-```
 
 ### Installing
 
