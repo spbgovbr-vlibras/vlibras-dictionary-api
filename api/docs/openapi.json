@@ -12,7 +12,7 @@
 	],
 	"info": {
 		"description": "VLibras Dictionary is an open source API developed for the distribution of VLibras animation files",
-		"version": "1.0.0",
+		"version": "1.1.0",
 		"title": "VLibras Dictionary API",
 		"contact": {
 			"email": "vlibras@lavid.ufpb.br"
