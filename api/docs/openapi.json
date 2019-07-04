@@ -2,16 +2,8 @@
 	"openapi": "3.0.0",
 	"servers": [
 		{
-			"description": "VLibras Dictionary Brazilian Government Server",
-			"url": "http://dicionario.vlibras.gov.br"
-		},
-		{
 			"description": "VLibras Dictionary v2 Brazilian Government Server",
 			"url": "http://dicionario2.vlibras.gov.br"
-		},
-		{
-			"description": "VLibras Dictionary v2 Brazilian Government DTH Server",
-			"url": "http://dicionario2-dth.vlibras.gov.br"
 		},
 		{
 			"description": "VLibras Dictionary Localhost server",
