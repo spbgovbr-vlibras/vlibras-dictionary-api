@@ -1,33 +1,29 @@
 apiVersion: extensions/v1beta1
-#kubectl expose deployment vlibrasdicionario --port=80 --type=LoadBalancer
-#kubectl autoscale deployment vlibrasdicionario --cpu-percent=70 --min=1 --max=8
+#kubectl expose deployment dictionaryapi --port=80 --type=LoadBalancer
+#kubectl autoscale deployment dictionaryapi --cpu-percent=70 --min=1 --max=8
 kind: Deployment
 metadata:
-  name: dicionarioapi
+  name: dictionaryapi
   labels:
-    app: dicionarioapi
+    app: dictionaryapi
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dicionarioapi
+      app: dictionaryapi
   template:
     metadata:
       labels:
-        app: dicionarioapi
+        app: dictionaryapi
     spec:
       containers:
-        - image: vlibras/dicionario:08
-          name: dicionarioapi
+        - image: vlibras/dictionary:08
+          name: dictionaryapi
           env:
-            - name: DICIONARIO_URL
+            - name: DICTIONARY_URL
               value: "sinais.vlibras.lavid.ufpb.br"
-            - name: DICIONARIO_PORT
+            - name: DICTIONARY_PORT
               value: "80"
-            - name: BUNDLES_DIR
-              value: "/dicionario-api/bundles/"
-            - name: DEFAULT_VERSION
-              value: "2018.3.0"
             - name: PORT
               value: "80"
             - name: DB_HOST
@@ -44,10 +40,10 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 20
           volumeMounts:
-            - name: dicionario-storage
+            - name: dictionary-storage
               mountPath: /exports
       volumes:
-        - name: dicionario-storage
+        - name: dictionary-storage
           persistentVolumeClaim:
-            claimName: dicionario-bundles
+            claimName: dictionary-bundles
       hostNetwork: true
