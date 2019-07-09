@@ -118,7 +118,7 @@ kubectl expose rc mongo-controller --type=ClusterIP
 ```
 These commands will start the MongoDB pods. You must configure a volume set to be used by it. By default it set to be used in a Google Cloud Plataform (GCP)
 
-Then , open the file server.yaml and edit these enviroment variables to match yours.
+Then , open the file dictionary-server.yaml and edit these enviroment variables to match yours.
 
 ```sh
 - name: DB_HOST
