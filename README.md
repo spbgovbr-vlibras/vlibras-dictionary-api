@@ -99,9 +99,8 @@ http://localhost:3030/docs
 
 ## Deployment
 
-> In writing process
 
-<!-- ### Prerequisites
+### Prerequisites
 
 To fully deployment this application its necessary to have instaled and configurated the Docker Engine (https://www.docker.com/) and Kubernetes Container Orchestration (https://kubernetes.io/)
 Accomplishing this task change to datacenter to another. Acess all links above to fullfil your needs. 
@@ -134,7 +133,7 @@ Finally, starting the service is made by :
 kubectl apply -f kubernetes/server.yaml
 kubectl expose deployment vlibrasdicionario --port=80 --type=LoadBalancer
 ```
-Note that as happened to MongoDB, You must configure a volume set to be used by it. -->
+Note that as happened to MongoDB, You must configure a volume set to be used by it.
 
 
 ## Contributors
