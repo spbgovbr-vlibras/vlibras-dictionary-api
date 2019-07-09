@@ -116,7 +116,7 @@ Once kubectl is installed and set, run the following commands:
 kubectl apply -f kubernetes/mongo.yaml 
 kubectl expose rc mongo-controller --type=ClusterIP
 ```
-These commands will start the MongoDB pods. You must configure a volume set to be used by it. By default it set to be used in a Google Cloud Plataform (GCP)
+These commands will start the MongoDB pods. You must configure a persistent volume claim (PVC) to be used by it. As example, the dictionary-server.yaml has a volume claim attachment to a local persistent volume.
 
 Then , open the file dictionary-server.yaml and edit these enviroment variables to match yours.
 
@@ -130,10 +130,10 @@ Then , open the file dictionary-server.yaml and edit these enviroment variables 
 Finally, starting the service is made by :
 
 ```sh
-kubectl apply -f kubernetes/server.yaml
-kubectl expose deployment vlibrasdicionario --port=80 --type=LoadBalancer
+kubectl apply -f kubernetes/dictionary-server.yaml.yaml
+kubectl expose deployment dictionaryapi --port=80 --type=LoadBalancer
 ```
-Note that as happened to MongoDB, You must configure a volume set to be used by it.
+Note that as happened to MongoDB, You must configure a PVC to be used by it.
 
 
 ## Contributors
