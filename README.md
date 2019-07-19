@@ -118,19 +118,19 @@ kubectl expose rc mongo-controller --type=ClusterIP
 ```
 These commands will start the MongoDB pods. You must configure a persistent volume claim (PVC) to be used by it. As example, the dictionary-server.yaml has a volume claim attachment to a local persistent volume.
 
-Then , open the file dictionary-server.yaml and edit these enviroment variables to match yours.
+Then , open the file dictionary-server-template.yaml and edit these enviroment variables to match yours.
 
 ```sh
 - name: DB_HOST
-  value: "MongoDB-ClusterIP"
+  value: "MONGODB-IP"
 - name: DB_PORT
-  value: "MongoDB-Port"
+  value: "MONGODB-PORT"
 ```
 
 Finally, starting the service is made by :
 
 ```sh
-kubectl apply -f kubernetes/dictionary-server.yaml.yaml
+kubectl apply -f kubernetes/dictionary-server-template.yaml.yaml
 kubectl expose deployment dictionaryapi --port=80 --type=LoadBalancer
 ```
 Note that as happened to MongoDB, You must configure a PVC to be used by it.
