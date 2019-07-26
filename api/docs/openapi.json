@@ -78,13 +78,34 @@
 						}
 					},
 					"404": {
-						"description": "Animation file not found"
+						"description": "Animation file not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BundleNotFound"
+								}
+							}
+						}
 					},
 					"422": {
-						"description": "Invalid value for version|platform param"
+						"description": "Received an invalid url param",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/InvalidParams"
+								}
+							}
+						}
 					},
 					"500": {
-						"description": "Internal server error"
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/InternalError"
+								}
+							}
+						}
 					}
 				}
 			}
@@ -147,13 +168,34 @@
 						}
 					},
 					"404": {
-						"description": "Animation file not found"
+						"description": "Animation file not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BundleNotFound"
+								}
+							}
+						}
 					},
 					"422": {
-						"description": "Invalid value for version|platform|region param"
+						"description": "Received an invalid url param",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/InvalidParams"
+								}
+							}
+						}
 					},
 					"500": {
-						"description": "Internal server error"
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/InternalError"
+								}
+							}
+						}
 					}
 				}
 			}
@@ -178,7 +220,14 @@
 						}
 					},
 					"500": {
-						"description": "Internal server error"
+						"description": "Internal server error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/InternalError"
+								}
+							}
+						}
 					}
 				}
 			}
@@ -190,17 +239,17 @@
 				"type": "string",
 				"pattern": "^(\\d{1}|\\d{4}).\\d{1}.\\d{1}$",
 				"enum": [
-					"5.5.1",
-					"2018.3.0"
+					"2018.3.0",
+					"5.5.1"
 				]
 			},
 			"Platform": {
 				"type": "string",
 				"enum": [
+					"WEBGL",
 					"ANDROID",
 					"IOS",
-					"STANDALONE",
-					"WEBGL"
+					"STANDALONE"
 				]
 			},
 			"Region": {
@@ -271,7 +320,35 @@
 			},
 			"File": {
 				"type": "string",
-				"format": "binary"
+				"format": "binary",
+				"example": "OK"
+			},
+			"BundleNotFound": {
+				"type": "object",
+				"properties": {
+					"error": {
+						"type": "object",
+						"example": "Bundle Not Found"
+					}
+				}
+			},
+			"InvalidParams": {
+				"type": "object",
+				"properties": {
+					"error": {
+						"type": "object",
+						"example": "Unprocessable Entity"
+					}
+				}
+			},
+			"InternalError": {
+				"type": "object",
+				"properties": {
+					"error": {
+						"type": "object",
+						"example": "<Reason of the Internal Error>"
+					}
+				}
 			}
 		}
 	}

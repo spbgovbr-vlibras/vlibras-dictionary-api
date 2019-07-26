@@ -2,7 +2,7 @@
   <a href="http://www.vlibras.gov.br/">
     <img
       alt="VLibras"
-      src="http://www.vlibras.gov.br/assets/imgs/IcaroGrande.png"
+      src="https://vlibras.gov.br/assets/imgs/IcaroGrande.png"
     />
   </a>
 </div>
@@ -49,6 +49,7 @@ curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 ```sh
 sudo apt install -y nodejs
 ```
+<br/>
 
 [MongoDB](https://www.mongodb.com/)
 
