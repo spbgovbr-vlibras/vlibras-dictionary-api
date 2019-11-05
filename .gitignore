@@ -83,3 +83,6 @@ typings/
 
 # Compiled code
 dist/
+
+# VLibras signs list
+*.txt
