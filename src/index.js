@@ -2,7 +2,7 @@
 
 import http from 'http';
 import app from './app/app';
-import { indexSigns } from './app/util/signsIndexer';
+import signsIndexerBot from './app/util/signsIndexerBot';
 import mongoConnection from './app/util/mongoConnection';
 import { serverInfo, serverError } from './app/util/debugger';
 
@@ -58,8 +58,8 @@ const onListening = function onListeningEvent() {
 const listen = async function startListening() {
   try {
     serverInfo('Starting');
-    await indexSigns();
-    serverInfo('Successfully indexed dictionary signs');
+    await signsIndexerBot();
+    serverInfo('Signs indexer bot started');
     await mongoConnection();
     serverInfo(`Connected to ${process.env.DB_NAME}`);
     server.listen(serverPort);
