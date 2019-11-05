@@ -1,9 +1,21 @@
-FROM node
+FROM node:10.16-alpine AS build
 
-ADD api dictionary-api
+RUN apk --no-cache add python make g++
 
-WORKDIR dictionary-api/
+COPY . /src
+WORKDIR /src
 
-RUN npm install && npm audit fix
+RUN npm ci \
+  && npm run build \
+  && npm prune --production
 
-ENTRYPOINT npm start --silent
+FROM node:10.16-alpine
+
+COPY --from=build /src/node_modules node_modules
+COPY --from=build /src/dist dist
+
+ENV DEBUG vlibras-dictionary-*:*
+ENV NODE_ENV production
+
+USER node
+CMD ["node", "./dist/index.js"]
