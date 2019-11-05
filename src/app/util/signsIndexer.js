@@ -25,7 +25,7 @@ const retrieveSignsList = async function retrieveDictionarySignsList() {
       });
     });
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 };
 
@@ -34,7 +34,7 @@ const indexSigns = async function indexDictionarySigns() {
     const signsListFile = await retrieveSignsList();
     fs.readFile(signsListFile, 'utf8', (error, data) => {
       if (error) {
-        throw new Error(error);
+        throw new Error(error.message);
       }
 
       const prefixTree = new Trie();
@@ -48,7 +48,7 @@ const indexSigns = async function indexDictionarySigns() {
       return undefined;
     });
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 };
 
