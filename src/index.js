@@ -2,7 +2,7 @@
 
 import http from 'http';
 import app from './app/app';
-import signsIndexerBot from './app/util/signsIndexerBot';
+import signsIndexerDaemon from './app/daemons/signsIndexerDaemon';
 import mongoConnection from './app/util/mongoConnection';
 import { serverInfo, serverError } from './app/util/debugger';
 
@@ -58,15 +58,15 @@ const onListening = function onListeningEvent() {
 const listen = async function startListening() {
   try {
     serverInfo('Starting');
-    await signsIndexerBot();
-    serverInfo('Signs indexer bot started');
+    await signsIndexerDaemon();
+    serverInfo('Signs indexer daemon started');
     await mongoConnection();
     serverInfo(`Connected to ${process.env.DB_NAME}`);
     server.listen(serverPort);
     server.on('error', onError);
     server.on('listening', onListening);
   } catch (error) {
-    serverError(error.message);
+    serverError('', error.stack);
     process.exit(1);
   }
 };

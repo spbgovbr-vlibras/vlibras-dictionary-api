@@ -52,7 +52,7 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
               signUpdateData.update,
               signUpdateData.options,
             );
-          } catch (databaseUPdateError) { /* empty */ }
+          } catch (databaseUpdateError) { /* empty */ }
         }
       } else {
         res.download(signFile);
@@ -62,7 +62,7 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
             signUpdateData.update,
             signUpdateData.options,
           );
-        } catch (databaseUPdateError) { /* empty */ }
+        } catch (databaseUpdateError) { /* empty */ }
       }
     });
   } catch (error) {
