@@ -88,7 +88,7 @@
             }
           },
           "422": {
-            "description": "Received an invalid url param",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -178,7 +178,7 @@
             }
           },
           "422": {
-            "description": "Received an invalid url param",
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "schema": {
@@ -338,7 +338,7 @@
         "properties": {
           "error": {
             "type": "object",
-            "example": "Unprocessable Entity"
+            "example": "<Entity error that could not be processed>"
           }
         }
       },
