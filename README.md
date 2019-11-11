@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="http://www.vlibras.gov.br/">
+  <a href="https://www.vlibras.gov.br/">
     <img
       alt="VLibras"
       src="https://vlibras.gov.br/assets/imgs/IcaroGrande.png"
@@ -21,9 +21,9 @@ VLibras Dictionary Service API.
   - [System Requirements](#system-requirements)
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
-- **[Documentation](#documentation)**
+  - [API Documentation](#api-documentation)
 - **[Deployment](#deployment)**
-  - [Deploy Tools](#deploy-tools)
+  - [Deployment Tools](#deployment-tools)
   - [Deploying](#deploying)
 - **[Contributors](#contributors)**
 - **[License](#license)**
@@ -34,36 +34,59 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### System Requirements
 
-* OS: Ubuntu 18.04.2 LTS (Bionic Beaver)
+* OS: Ubuntu 18.04.3 LTS (Bionic Beaver)
 
 ### Prerequisites
 
 Before starting the installation, you need to install some prerequisites:
 
-[Node.js](https://nodejs.org/en/)
+##### [Node.js](https://nodejs.org/en/)
+
+Add NodeSource repository.
 
 ```sh
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 ```
 
+Install Node.js.
+
 ```sh
 sudo apt install -y nodejs
 ```
-<br/>
 
-[MongoDB](https://www.mongodb.com/)
+##### [MongoDB](https://www.mongodb.com/)
 
-```sh
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
-```
-
-```sh
-echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
-```
+Update local package database.
 
 ```sh
 sudo apt update
 ```
+
+Install required libraries.
+
+```sh
+sudo apt install -y wget gnupg
+```
+
+Import the public key used by the package management system.
+
+```sh
+wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+```
+
+Create a list file for MongoDB.
+
+```sh
+echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+```
+
+Reload local package database.
+
+```sh
+sudo apt update
+```
+
+Install the MongoDB packages.
 
 ```sh
 sudo apt install -y mongodb-org
@@ -74,112 +97,100 @@ sudo apt install -y mongodb-org
 After installing all the prerequisites, install the project by running the command:
 
 ```sh
-cd api/
-```
-
-```sh
 npm install
 ```
 
 To test the installation, simply start the dictionary API with the following command:
 
 ```sh
-cd api/
-```
-
-```sh
 npm run dev
 ```
 
-## Documentation
+### API Documentation
 
 To access the documentation and usage examples of the VLibras Dictionary API, start the dictionary server in your localhost and open a browser with the following link:
 
-```
-http://localhost:3030/docs
-```
+[http://localhost:3030/docs](http://localhost:3030/docs)
 
 ## Deployment
 
 These instructions will get you a copy of the project up and running on a live System.
 
-### Deploy Tools
+### Deployment Tools
 
 To fully deployment of this project its necessary to have installed and configured the Docker Engine and Kubernetes Container Orchestration.
 
-[Docker](https://www.docker.com/)
+##### [Docker](https://www.docker.com/)
 
-Update the apt package index:
+Update the apt package index.
 
 ```sh
 sudo apt update
 ```
 
-Install packages to allow apt to use a repository over HTTPS:
+Install packages to allow apt to use a repository over HTTPS.
 
 ```sh
 sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 ```
 
-Add Docker’s official GPG key:
+Add Docker’s official GPG key.
 
 ```sh
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 ```
 
-Use the following command to set up the stable repository:
+Set up the stable repository.
 
 ```sh
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
 ```
 
-Update the apt package index:
+Update the apt package index.
 
 ```sh
 sudo apt update
 ```
 
-Install the latest version of Docker and containerd:
+Install the latest version of Docker and containerd.
 
 ```sh
 sudo apt install -y docker-ce docker-ce-cli containerd.io
 ```
 
-<br/>
+##### [Kubernetes](https://kubernetes.io/)
 
-[Kubernetes](https://kubernetes.io/)
-
-Update the apt package index:
+Update the apt package index.
 
 ```sh
 sudo apt update
 ```
 
-Install packages to allow apt to use a repository over HTTPS:
+Install packages to allow apt to use a repository over HTTPS.
 
 ```sh
 sudo apt install -y apt-transport-https
 ```
 
-Add Kubernetes’s official GPG key:
+Add Kubernetes’s official GPG key.
 
 ```sh
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 ```
 
-Use the following command to set up the main repository:
+Set up the main repository.
 
 ```sh
 echo "deb https://apt.kubernetes.io/ kubernetes-bionic main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
 ```
 
-Update the apt package index:
+Update the apt package index.
 
 ```sh
 sudo apt update
 ```
 
-Install the kubectl:
+Install the kubectl.
 
 ```sh
 sudo apt install -y kubectl
@@ -187,33 +198,48 @@ sudo apt install -y kubectl
 
 ### Deploying
 
-> Note: if you already MongoDB running on your cluster, skip the next step.
+Before you deploy the project, you must have MongoDB up and running on your cluster. Execute the following commands to start MongoDB pods:
 
-Once kubectl is installed and set, run the following commands:
+> Note: if you already have MongoDB on your cluster, skip this step.
 
 ```sh
-kubectl apply -f kubernetes/mongo.yaml 
-kubectl expose rc mongo-controller --type=ClusterIP
+kubectl apply -f kubernetes/mongo.yaml
 ```
-These commands will start the MongoDB pods. You must configure a persistent volume claim (PVC) to be used by it. As example, the dictionary-server.yaml has a volume claim attachment to a local persistent volume.
-
-Then , open the file dictionary-server-template.yaml and edit these enviroment variables to match yours.
 
 ```sh
+kubectl expose rc mongo-controller --type=<cluster-IP>
+```
+
+After configuring MongoDB, open [dictionary-server-template.yaml](kubernetes/dictionary-server-template.yaml) and set the following environment variables:
+
+```yaml
 - name: DB_HOST
-  value: "MONGODB-IP"
+  value: "<value>"
 - name: DB_PORT
-  value: "MONGODB-PORT"
+  value: "<value>"
+- name: DB_NAME
+  value: "<value>"
+- name: MAIN_DICTIONARY_URL
+  value: "<value>"
+- name: MAIN_SIGNS_LIST_PATH
+  value: "<value>"
+- name: SIGNS_LIST_UPDATE_INTERVAL
+  value: "<value>"
+- name: LOCAL_DICTIONARY_DIR
+  value: "<value>"
 ```
 
-Finally, starting the service is made by :
+> Note: information about these environment variables can be found in [.env.dev](/src/config/environments/.env.dev) file.
+
+Finally, deploy project by running:
 
 ```sh
-kubectl apply -f kubernetes/dictionary-server-template.yaml.yaml
+kubectl apply -f kubernetes/dictionary-server-template.yaml
+```
+
+```sh
 kubectl expose deployment dictionaryapi --port=80 --type=LoadBalancer
 ```
-Note that as happened to MongoDB, You must configure a PVC to be used by it.
-
 
 ## Contributors
 
