@@ -8,10 +8,10 @@ import { SIGNS_INDEXER_ERROR } from '../../config/error';
 let JSONPrefixTree;
 
 const retrieveSignsList = async function retrieveDictionarySignsList() {
-  const signsListURL = new URL(env.MAIN_SIGNS_LIST_PATH, env.MAIN_DICTIONARY_DNS);
+  const signsListURL = new URL(env.MAIN_SIGNS_LIST_PATH, env.MAIN_DICTIONARY_URL);
   try {
     const response = await axios.get(signsListURL.href, { responseType: 'stream' });
-    const localSignsListPath = path.join(env.DICTIONARY_DIR, signsListURL.pathname);
+    const localSignsListPath = path.join(env.LOCAL_DICTIONARY_DIR, signsListURL.pathname);
     const streamWriter = fs.createWriteStream(localSignsListPath);
 
     response.data.pipe(streamWriter);

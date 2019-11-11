@@ -10,7 +10,7 @@ import { DICTIONARY_ERROR } from '../../config/error';
 const signsDownloader = async function signsDownloaderController(req, res, next) {
   try {
     let signFile = path.join(
-      env.DICTIONARY_DIR,
+      env.LOCAL_DICTIONARY_DIR,
       req.params.version,
       req.params.platform,
       req.params.sign,
@@ -73,7 +73,7 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
 const regionSignsDownloader = async function regionSignsDownloaderController(req, res, next) {
   try {
     let signFile = path.join(
-      env.DICTIONARY_DIR,
+      env.LOCAL_DICTIONARY_DIR,
       req.params.version,
       req.params.platform,
       req.params.region,

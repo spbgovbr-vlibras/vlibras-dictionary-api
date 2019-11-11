@@ -5,12 +5,12 @@ import env from '../../config/environments/environment';
 
 const signUpdate = async function dictionarySignUpdate(version, platform, sign, region) {
   const signURL = region
-    ? new URL(`${version}/${platform}/${region}/${sign}`, env.MAIN_DICTIONARY_DNS)
-    : new URL(`${version}/${platform}/${sign}`, env.MAIN_DICTIONARY_DNS);
+    ? new URL(`${version}/${platform}/${region}/${sign}`, env.MAIN_DICTIONARY_URL)
+    : new URL(`${version}/${platform}/${sign}`, env.MAIN_DICTIONARY_URL);
 
   try {
     const response = await axios.get(signURL.href, { responseType: 'stream' });
-    const localSignPath = path.join(env.DICTIONARY_DIR, decodeURI(signURL.pathname));
+    const localSignPath = path.join(env.LOCAL_DICTIONARY_DIR, decodeURI(signURL.pathname));
     const streamWriter = fs.createWriteStream(localSignPath);
 
     response.data.pipe(streamWriter);
