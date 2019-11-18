@@ -11,8 +11,10 @@ const signUpdate = async function dictionarySignUpdate(version, platform, sign, 
   try {
     const response = await axios.get(signURL.href, { responseType: 'stream' });
     const localSignPath = path.join(env.LOCAL_DICTIONARY_DIR, decodeURI(signURL.pathname));
-    const streamWriter = fs.createWriteStream(localSignPath);
 
+    await fs.promises.mkdir(path.dirname(localSignPath), { recursive: true });
+
+    const streamWriter = fs.createWriteStream(localSignPath);
     response.data.pipe(streamWriter);
 
     return new Promise((resolve, reject) => {

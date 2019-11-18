@@ -12,8 +12,10 @@ const retrieveSignsList = async function retrieveDictionarySignsList() {
   try {
     const response = await axios.get(signsListURL.href, { responseType: 'stream' });
     const localSignsListPath = path.join(env.LOCAL_DICTIONARY_DIR, signsListURL.pathname);
-    const streamWriter = fs.createWriteStream(localSignsListPath);
 
+    await fs.promises.mkdir(path.dirname(localSignsListPath), { recursive: true });
+
+    const streamWriter = fs.createWriteStream(localSignsListPath);
     response.data.pipe(streamWriter);
 
     return new Promise((resolve, reject) => {
