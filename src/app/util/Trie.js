@@ -15,11 +15,11 @@ Trie.prototype.addWord = function addNewWord(word, node = this.root) {
 
   if (!node.children.has(word[0])) {
     node.children.set(word[0], new Node());
-    setImmediate(() => {
+    process.nextTick(() => {
       this.addWord(word.substr(1), node.children.get(word[0]));
     });
   } else {
-    setImmediate(() => {
+    process.nextTick(() => {
       this.addWord(word.substr(1), node.children.get(word[0]));
     });
   }
@@ -32,7 +32,7 @@ Trie.prototype.toJSON = function convertTrieToJSON() {
     jsonNode.end = node.isEnd;
     for (const key of node.children.keys()) {
       jsonNode.children[key] = { children: {}, end: false };
-      setImmediate(() => {
+      process.nextTick(() => {
         search(node.children.get(key), jsonNode.children[key]);
       });
     }
