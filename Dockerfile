@@ -17,5 +17,4 @@ COPY --from=build /src/dist dist
 ENV DEBUG vlibras-dictionary-*:*
 ENV NODE_ENV production
 
-USER node
 CMD ["node", "./dist/index.js"]
