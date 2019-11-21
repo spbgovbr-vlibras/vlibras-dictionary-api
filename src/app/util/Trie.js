@@ -33,7 +33,7 @@ Trie.prototype.toJSON = function convertTrieToJSON() {
     for (const key of node.children.keys()) {
       jsonNode.children[key] = { children: {}, end: false };
       setImmediate(() => {
-        search(node.children.get(key), jsonNode.children[key])
+        search(node.children.get(key), jsonNode.children[key]);
       });
     }
   };
