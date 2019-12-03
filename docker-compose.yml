@@ -2,18 +2,19 @@ version: '3'
 services:
   vlibras-dictionary-api:
     build: .
-    image: vlibras_dictionary/api:2.2.1
+    image: vlibras_dictionary/api:1.1.0
     ports:
       - "3030:3030"
     networks:
-      - redis-net
       - mongo-net
-      - rabbitmq-net
     environment:
       PORT: 3030
       DB_HOST: mongo
       DB_PORT: 27017
       DB_NAME: "vlibras-db"
+      DICTIONARY_REPOSITORY_URL: "http://localhost:8000"
+      LOCAL_DICTIONARY_REPOSITORY: /tmp/bundles
+      SIGNS_LIST_REFRESH_INTERVAL: 3600000
     depends_on:
       - mongo
 
