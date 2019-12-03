@@ -9,8 +9,8 @@ export const VALIDATION_VALUES = {
 };
 
 export const VALIDATION_ERRORS = {
-  dictionaryVersions: `'version' is not in valid values ${VALIDATION_VALUES.dictionaryVersions}.`,
-  dictionaryPlatforms: `'platform' is not in valid values ${VALIDATION_VALUES.dictionaryPlatforms}.`,
-  dictionaryRegions: `'region' is not in valid values ${VALIDATION_VALUES.dictionaryRegions}.`,
+  dictionaryVersions: `'version' is not in valid values [${VALIDATION_VALUES.dictionaryVersions}].`,
+  dictionaryPlatforms: `'platform' is not in valid values [${VALIDATION_VALUES.dictionaryPlatforms}].`,
+  dictionaryRegions: `'region' is not in valid values [${VALIDATION_VALUES.dictionaryRegions}].`,
   dictionarySign: '\'sign\' cannot be empty.',
 };

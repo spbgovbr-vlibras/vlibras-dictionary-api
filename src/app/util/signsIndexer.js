@@ -3,15 +3,16 @@ import fs from 'fs';
 import path from 'path';
 import env from '../../config/environments/environment';
 import Trie from './Trie';
+import { VALIDATION_VALUES } from '../../config/validation';
 import { SIGNS_INDEXER_ERROR } from '../../config/error';
 
-let JSONPrefixTree;
+const JSONPrefixTrees = {};
 
-const retrieveSignsList = async function retrieveDictionarySignsList() {
-  const signsListURL = new URL(env.MAIN_SIGNS_LIST_PATH, env.MAIN_DICTIONARY_URL);
+const retrieveSignsList = async function retrieveDictionarySignsList(version) {
+  const signsListURL = new URL(`${version}/signs.txt`, env.DICTIONARY_REPOSITORY_URL);
   try {
     const response = await axios.get(signsListURL.href, { responseType: 'stream' });
-    const localSignsListPath = path.join(env.LOCAL_DICTIONARY_DIR, signsListURL.pathname);
+    const localSignsListPath = path.join(env.LOCAL_DICTIONARY_REPOSITORY, signsListURL.pathname);
 
     await fs.promises.mkdir(path.dirname(localSignsListPath), { recursive: true });
 
@@ -31,12 +32,11 @@ const retrieveSignsList = async function retrieveDictionarySignsList() {
   }
 };
 
-const indexSigns = async function indexDictionarySigns() {
-  try {
-    const signsListFile = await retrieveSignsList();
+const buildPrefixTree = function buildJSONPrefixTree(signsListFile) {
+  return new Promise((resolve, reject) => {
     fs.readFile(signsListFile, 'utf8', (error, data) => {
       if (error) {
-        throw new Error(error.message);
+        return reject(error.message);
       }
 
       const prefixTree = new Trie();
@@ -46,20 +46,44 @@ const indexSigns = async function indexDictionarySigns() {
         prefixTree.addWord(signsList[i]);
       }
 
-      JSONPrefixTree = prefixTree.toJSON();
-      return undefined;
+      const JSONPrefixTree = prefixTree.toJSON();
+      return resolve(JSONPrefixTree);
+    });
+  });
+};
+
+const indexSigns = async function indexDictionarySigns() {
+  try {
+    const { dictionaryVersions } = VALIDATION_VALUES;
+
+    const signsListRequests = [];
+    for (let i = 0; i < dictionaryVersions.length; i += 1) {
+      signsListRequests.push(retrieveSignsList(dictionaryVersions[i]));
+    }
+
+    const signsListFiles = await Promise.all(signsListRequests);
+
+    const prefixTreesList = [];
+    for (let i = 0; i < signsListFiles.length; i += 1) {
+      prefixTreesList.push(buildPrefixTree(signsListFiles[i]));
+    }
+
+    const prefixTreesObjects = await Promise.all(prefixTreesList);
+
+    dictionaryVersions.forEach((key, index) => {
+      JSONPrefixTrees[key] = prefixTreesObjects[index];
     });
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-const getIndexedSigns = function getIndexedDictionarySigns() {
+const getIndexedSigns = function getIndexedDictionarySigns(version) {
   return new Promise((resolve, reject) => {
-    if (JSONPrefixTree === undefined) {
+    if (!JSONPrefixTrees[version]) {
       return reject(new Error(SIGNS_INDEXER_ERROR.trieNotBuilt));
     }
-    return resolve(JSONPrefixTree);
+    return resolve(JSONPrefixTrees[version]);
   });
 };
 

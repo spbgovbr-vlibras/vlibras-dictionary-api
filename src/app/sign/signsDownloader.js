@@ -4,13 +4,13 @@ import path from 'path';
 import env from '../../config/environments/environment';
 import signsUpdate from '../util/signsUpdate';
 import Sign from './Sign';
-import { VALIDATION_VALUES } from '../../config/validation';
+import { DEFAULT_DICTIONARY_REGION } from '../../config/default';
 import { DICTIONARY_ERROR } from '../../config/error';
 
 const signsDownloader = async function signsDownloaderController(req, res, next) {
   try {
     let signFile = path.join(
-      env.LOCAL_DICTIONARY_DIR,
+      env.LOCAL_DICTIONARY_REPOSITORY,
       req.params.version,
       req.params.platform,
       req.params.sign,
@@ -21,12 +21,12 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
         query: {
           $and: [
             { name: req.params.sign },
-            { region: VALIDATION_VALUES.defaultDictionaryRegion },
+            { region: DEFAULT_DICTIONARY_REGION },
           ],
         },
         update: {
           name: req.params.sign,
-          region: VALIDATION_VALUES.defaultDictionaryRegion,
+          region: DEFAULT_DICTIONARY_REGION,
           available: true,
           $inc: { hits: 1 },
           requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
@@ -73,7 +73,7 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
 const regionSignsDownloader = async function regionSignsDownloaderController(req, res, next) {
   try {
     let signFile = path.join(
-      env.LOCAL_DICTIONARY_DIR,
+      env.LOCAL_DICTIONARY_REPOSITORY,
       req.params.version,
       req.params.platform,
       req.params.region,

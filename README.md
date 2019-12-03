@@ -219,13 +219,13 @@ After configuring MongoDB, open [dictionary-server-template.yaml](kubernetes/dic
   value: "<value>"
 - name: DB_NAME
   value: "<value>"
-- name: MAIN_DICTIONARY_URL
+- name: DICTIONARY_REPOSITORY_URL
   value: "<value>"
-- name: MAIN_SIGNS_LIST_PATH
+- name: DICTIONARY_SIGNS_URL_PATH
   value: "<value>"
 - name: SIGNS_LIST_UPDATE_INTERVAL
   value: "<value>"
-- name: LOCAL_DICTIONARY_DIR
+- name: LOCAL_DICTIONARY_REPOSITORY
   value: "<value>"
 ```
 

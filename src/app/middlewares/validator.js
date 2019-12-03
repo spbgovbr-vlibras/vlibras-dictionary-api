@@ -1,5 +1,5 @@
 import createError from 'http-errors';
-import { param, validationResult } from 'express-validator/check';
+import { param, query, validationResult } from 'express-validator/check';
 import toUpperCaseSanitizer from '../util/sanitizer';
 import { VALIDATION_VALUES, VALIDATION_ERRORS } from '../../config/validation';
 
@@ -20,6 +20,13 @@ export const dictionaryValidationRules = [
     .not().isEmpty()
     .customSanitizer(toUpperCaseSanitizer)
     .withMessage(VALIDATION_ERRORS.dictionarySign),
+];
+
+export const signsListValidationRules = [
+  query('version')
+    .optional()
+    .isIn(VALIDATION_VALUES.dictionaryVersions)
+    .withMessage(VALIDATION_ERRORS.dictionaryVersions),
 ];
 
 export const checkValidation = function checkRequestValidation(req, _res, next) {

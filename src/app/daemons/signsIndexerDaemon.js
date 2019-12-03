@@ -11,7 +11,7 @@ const signsIndexerDaemon = async function dictionarySignsIndexerDaemon() {
       } catch (error) {
         indexerError(error.message);
       }
-    }, env.SIGNS_LIST_UPDATE_INTERVAL);
+    }, env.SIGNS_LIST_REFRESH_INTERVAL);
   } catch (error) {
     throw new Error(error.message);
   }
