@@ -1,0 +1,2 @@
+export const DEFAULT_DICTIONARY_REGION = 'BR';
+export const DEFAULT_DICTIONARY_VERSION = '2018.3.0';
