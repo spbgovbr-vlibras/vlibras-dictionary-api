@@ -1,12 +1,11 @@
 export const VALIDATION_VALUES = {
-  dictionaryVersions: ['5.5.1', '2018.3.0'],
+  dictionaryVersions: ['2018.3.0', '2018.3.1'],
   dictionaryPlatforms: ['ANDROID', 'IOS', 'LINUX', 'WINDOWS', 'WEBGL', 'STANDALONE'],
   dictionaryRegions: [
     'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO',
     'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI',
-    'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO', 'BR',
+    'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
   ],
-  defaultDictionaryRegion: 'BR',
 };
 
 export const VALIDATION_ERRORS = {
