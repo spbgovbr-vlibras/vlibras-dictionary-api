@@ -208,6 +208,16 @@
         "summary": "Get a list of all animations in the dictionary",
         "operationId": "getSignsList",
         "description": "Get a encoded list of all animations in the dictionary repository",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "version",
+            "schema": {
+              "$ref": "#/components/schemas/Version"
+            },
+            "description": "Filters by dictionary version"
+          }
+        ],
         "responses": {
           "200": {
             "description": "Animations list retrieved",
@@ -237,10 +247,10 @@
     "schemas": {
       "Version": {
         "type": "string",
-        "pattern": "^(\\d{1}|\\d{4}).\\d{1}.\\d{1}$",
+        "pattern": "^(\\d{4}).\\d{1}.\\d{1}$",
         "enum": [
           "2018.3.0",
-          "5.5.1"
+          "2018.3.1"
         ]
       },
       "Platform": {
