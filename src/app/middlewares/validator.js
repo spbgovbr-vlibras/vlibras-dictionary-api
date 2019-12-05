@@ -1,6 +1,6 @@
 import createError from 'http-errors';
 import { param, query, validationResult } from 'express-validator/check';
-import toUpperCaseSanitizer from '../util/sanitizer';
+import { toUpperCaseSanitizer } from '../util/sanitizer';
 import { VALIDATION_VALUES, VALIDATION_ERRORS } from '../../config/validation';
 
 export const dictionaryValidationRules = [
