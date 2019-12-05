@@ -107,40 +107,60 @@ const regionSignsDownloader = async function regionSignsDownloaderController(req
       req.params.sign,
     );
 
-    fs.access(signFile, fs.F_OK, async (err) => {
-      const signUpdateData = {
-        query: {
-          $and: [
-            { name: req.params.sign },
-            { region: req.params.region },
-          ],
-        },
-        update: {
-          name: req.params.sign,
-          region: req.params.region,
-          available: true,
-          $inc: { hits: 1 },
-          requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
-        },
-        options: { upsert: true },
-      };
+    const signUpdateData = {
+      query: {
+        $and: [
+          { name: req.params.sign },
+          { region: req.params.region },
+        ],
+      },
+      update: {
+        name: req.params.sign,
+        region: req.params.region,
+        available: true,
+        $inc: { hits: 1 },
+        requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+      },
+      options: { upsert: true },
+    };
 
-      if (err) {
+    fs.access(signFile, fs.F_OK, async (signNotInLocalError) => {
+      if (signNotInLocalError) {
         try {
           signFile = await repositorySignRequest(
             req.params.version,
             req.params.platform,
             req.params.sign,
-            req.params.region,
           );
           res.download(signFile);
-        } catch (error) {
+        } catch (repositorySignRequestError) {
           signUpdateData.update.available = false;
-          try {
-            await signsDownloader(req, res, next);
-          } catch (signsDownloaderError) {
-            next(signsDownloaderError);
+
+          let alternativeSign = signIntensifierSanitizer(req.params.sign);
+          alternativeSign = signContextSanitizer(alternativeSign);
+
+          if (alternativeSign === req.params.sign) {
+            return next(createError(404, DICTIONARY_ERROR.signNotFound));
           }
+
+          signFile = signFile.replace(req.params.sign, alternativeSign);
+          fs.access(signFile, fs.F_OK, async (alternativeSignNotInLocalError) => {
+            if (alternativeSignNotInLocalError) {
+              try {
+                signFile = await repositorySignRequest(
+                  req.params.version,
+                  req.params.platform,
+                  alternativeSign,
+                );
+                res.download(signFile);
+              } catch (repositorySignRequestError2) {
+                next(createError(404, DICTIONARY_ERROR.signNotFound));
+              }
+            } else {
+              res.download(signFile);
+            }
+            return undefined;
+          });
         } finally {
           try {
             await Sign.findOneAndUpdate(
@@ -160,6 +180,7 @@ const regionSignsDownloader = async function regionSignsDownloaderController(req
           );
         } catch (databaseUpdateError) { /* empty */ }
       }
+      return undefined;
     });
   } catch (error) {
     next(error);
