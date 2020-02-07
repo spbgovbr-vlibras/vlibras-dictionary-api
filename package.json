@@ -1,7 +1,7 @@
 {
   "name": "vlibras-dictionary-api",
   "description": "VLibras Dictionary Service API",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "private": true,
   "contributors": [
     "Jonathan Brilhante <jonathan.brilhante@lavid.ufpb.br>",
