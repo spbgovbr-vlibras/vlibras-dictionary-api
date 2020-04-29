@@ -11,6 +11,7 @@ import env from '../config/environments/environment';
 import apiDocRoute from './doc/apiDocRoute';
 import signsRoute from './sign/signsDownloaderRoute';
 import dictionarySignsRoute from './dictionary/dictionarySignsRoute';
+import metricsRoute from './metrics/metricsRoute';
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use('/', apiDocRoute);
 app.use('/', signsRoute);
 app.use('/', dictionarySignsRoute);
+app.use('/', metricsRoute);
 
 app.get('/healthcheck', (_req, res) => {
   res.sendStatus(200);
