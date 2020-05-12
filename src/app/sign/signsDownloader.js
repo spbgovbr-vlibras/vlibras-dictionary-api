@@ -33,7 +33,6 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
       },
       options: { upsert: true },
     };
-
     return fs.access(signFile, fs.F_OK, async (signNotInLocalError) => {
       if (signNotInLocalError) {
         try {

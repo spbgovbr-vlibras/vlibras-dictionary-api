@@ -2,7 +2,6 @@
 
 import http from 'http';
 import app from './app/app';
-import signsIndexerDaemon from './app/daemons/signsIndexerDaemon';
 import mongoConnection from './app/util/mongoConnection';
 import { serverInfo, serverError } from './app/util/debugger';
 
@@ -53,7 +52,6 @@ const onListening = function onListeningEvent(addr) {
 const startHTTPServer = async function startHTTPServerListen() {
   try {
     serverInfo('Starting server');
-    await signsIndexerDaemon();
     serverInfo('Signs indexer daemon started');
     await mongoConnection();
     serverInfo(`Connected to ${process.env.DB_NAME}`);
