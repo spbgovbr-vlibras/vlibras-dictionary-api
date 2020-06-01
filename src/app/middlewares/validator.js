@@ -29,6 +29,13 @@ export const signsListValidationRules = [
     .withMessage(VALIDATION_ERRORS.dictionaryVersions),
 ];
 
+export const timestampValidationRules = query('timestamp')
+  .optional()
+  .isInt(VALIDATION_VALUES.dateInterval)
+  .toInt()
+  .withMessage(VALIDATION_ERRORS.dateInterval);
+
+
 export const checkValidation = function checkRequestValidation(req, _res, next) {
   const errors = validationResult(req);
   if (errors.isEmpty()) {

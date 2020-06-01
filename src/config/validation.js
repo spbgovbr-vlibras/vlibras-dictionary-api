@@ -6,6 +6,7 @@ export const VALIDATION_VALUES = {
     'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI',
     'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
   ],
+  dateInterval: { min: 0, max: 8640000000000000 },
 };
 
 export const VALIDATION_ERRORS = {
@@ -13,4 +14,5 @@ export const VALIDATION_ERRORS = {
   dictionaryPlatforms: `'platform' is not in valid values [${VALIDATION_VALUES.dictionaryPlatforms}].`,
   dictionaryRegions: `'region' is not in valid values [${VALIDATION_VALUES.dictionaryRegions}].`,
   dictionarySign: '\'sign\' cannot be empty.',
+  dateInterval: '\'timestamp\' is not in a valid date range.',
 };
