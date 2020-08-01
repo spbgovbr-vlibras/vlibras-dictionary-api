@@ -21,14 +21,38 @@ const metrics = async function serviceMetrics(req, res, next) {
         { $group: { _id: '$available', count: { $sum: 1 } } },
         { $project: { available: '$_id', count: 1, _id: 0 } },
       ],
+      signsRankingAvailable: [
+        { $match: { createdAt: { $gte: startTime, $lt: endTime }, available: true } },
+        {
+          $project: {
+            name: 1, hits: 1, region: 1, available: 1,
+          },
+        },
+        { $limit: 10 },
+        { $sort: { hits: -1 } },
+      ],
+      signsRankingUnavailable: [
+        { $match: { createdAt: { $gte: startTime, $lt: endTime }, available: false } },
+        {
+          $project: {
+            name: 1, hits: 1, region: 1, available: 1,
+          },
+        },
+        { $limit: 10 },
+        { $sort: { hits: -1 } },
+      ],
     };
 
-    const [signsRequestsCounters, signsCounters] = await Promise.all([
+    const [signsRequestsCounters, signsCounters, signsRankingAvailable, signsRankingUnavailable] = await Promise.all([
       Sign.aggregate(queries.signsRequestsCount),
       Sign.aggregate(queries.signsCount),
+      Sign.aggregate(queries.signsRankingAvailable),
+      Sign.aggregate(queries.signsRankingUnavailable),
     ]);
 
-    return res.status(200).json({ signsRequestsCounters, signsCounters });
+    return res.status(200).json({
+      signsRequestsCounters, signsCounters, signsRankingAvailable, signsRankingUnavailable,
+    });
   } catch (error) {
     return next(error);
   }
