@@ -32,7 +32,7 @@ const metrics = async function serviceMetrics(req, res, next) {
             name: 1, hits: -1, available: 1,
           },
         },
-        { $sort: { hits: 1 } },
+        { $sort: { hits: -1 } },
         { $limit: 10 },
       ],
       signsRankingUnavailable: [
