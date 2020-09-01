@@ -22,28 +22,20 @@ const metrics = async function serviceMetrics(req, res, next) {
         { $project: { available: '$_id', count: 1, _id: 0 } },
       ],
       signsRankingAvailable: [
-        {
-          $match: {
-            available: true,
-          },
-        },
+        { $match: { available: true } },
         {
           $project: {
-            name: 1, hits: -1, available: 1,
+            name: 1, hits: -1, available: 1, _id: 0,
           },
         },
         { $sort: { hits: -1 } },
         { $limit: 10 },
       ],
       signsRankingUnavailable: [
-        {
-          $match: {
-            available: false,
-          },
-        },
+        { $match: { available: false } },
         {
           $project: {
-            name: 1, hits: 1, available: 1,
+            name: 1, hits: 1, available: 1, _id: 0,
           },
         },
         { $sort: { hits: -1 } },
@@ -51,10 +43,12 @@ const metrics = async function serviceMetrics(req, res, next) {
       ],
     };
 
-    const [signsRequestsCounters,
+    const [
+      signsRequestsCounters,
       signsCounters,
       signsRankingAvailable,
-      signsRankingUnavailable] = await Promise.all([
+      signsRankingUnavailable,
+    ] = await Promise.all([
       Sign.aggregate(queries.signsRequestsCount),
       Sign.aggregate(queries.signsCount),
       Sign.aggregate(queries.signsRankingAvailable),
@@ -62,7 +56,10 @@ const metrics = async function serviceMetrics(req, res, next) {
     ]);
 
     return res.status(200).json({
-      signsRequestsCounters, signsCounters, signsRankingAvailable, signsRankingUnavailable,
+      signsRequestsCounters,
+      signsCounters,
+      signsRankingAvailable,
+      signsRankingUnavailable,
     });
   } catch (error) {
     return next(error);

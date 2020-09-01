@@ -6,8 +6,8 @@ import env from '../../config/environments/environment';
 const repositorySignRequest = (
   async function requestSignFromSignsRepository(version, platform, sign, region) {
     const signURL = region
-      ? new URL(`${version}/${platform}/${region}/${sign}`, env.DICTIONARY_REPOSITORY_URL)
-      : new URL(`${version}/${platform}/${sign}`, env.DICTIONARY_REPOSITORY_URL);
+      ? new URL(`/api/signs/${version}/${platform}/${region}/${sign}`, env.DICTIONARY_REPOSITORY_URL)
+      : new URL(`/api/signs/${version}/${platform}/${sign}`, env.DICTIONARY_REPOSITORY_URL);
 
     try {
       const response = await axios.get(signURL.href, { responseType: 'stream' });

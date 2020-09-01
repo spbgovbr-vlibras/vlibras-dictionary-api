@@ -1,6 +1,4 @@
 import axios from 'axios';
-import fs from 'fs';
-import path from 'path';
 import env from '../../config/environments/environment';
 import Trie from './Trie';
 import { VALIDATION_VALUES } from '../../config/validation';
@@ -9,46 +7,28 @@ import { SIGNS_INDEXER_ERROR } from '../../config/error';
 const JSONPrefixTrees = {};
 
 const retrieveSignsList = async function retrieveDictionarySignsList(version) {
-  const signsListURL = new URL(`${version}/signs.txt`, env.DICTIONARY_REPOSITORY_URL);
+  const signsListURL = new URL(`/api/signs?version=${version}`, env.DICTIONARY_REPOSITORY_URL);
   try {
-    const response = await axios.get(signsListURL.href, { responseType: 'stream' });
-    const localSignsListPath = path.join(env.LOCAL_DICTIONARY_REPOSITORY, signsListURL.pathname);
-
-    await fs.promises.mkdir(path.dirname(localSignsListPath), { recursive: true });
-
-    const streamWriter = fs.createWriteStream(localSignsListPath);
-    response.data.pipe(streamWriter);
-
-    return new Promise((resolve, reject) => {
-      streamWriter.on('finish', () => {
-        resolve(localSignsListPath);
-      });
-      streamWriter.on('error', (error) => {
-        reject(error);
-      });
-    });
+    const response = await axios.get(
+      signsListURL.href,
+      { transformResponse: [(data) => JSON.parse(data)] },
+    );
+    return response.data;
   } catch (error) {
     throw new Error(error.message);
   }
 };
 
-const buildPrefixTree = function buildJSONPrefixTree(signsListFile) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(signsListFile, 'utf8', (error, data) => {
-      if (error) {
-        return reject(error.message);
-      }
+const buildPrefixTree = function buildJSONPrefixTree(signsList) {
+  return new Promise((resolve, _reject) => {
+    const prefixTree = new Trie();
 
-      const prefixTree = new Trie();
-      const signsList = data.split('\n');
+    for (let i = 0; i < signsList.length; i += 1) {
+      prefixTree.addWord(signsList[i]);
+    }
 
-      for (let i = 0; i < signsList.length; i += 1) {
-        prefixTree.addWord(signsList[i]);
-      }
-
-      const JSONPrefixTree = prefixTree.toJSON();
-      return resolve(JSONPrefixTree);
-    });
+    const JSONPrefixTree = prefixTree.toJSON();
+    return resolve(JSONPrefixTree);
   });
 };
 
@@ -61,11 +41,11 @@ const indexSigns = async function indexDictionarySigns() {
       signsListRequests.push(retrieveSignsList(dictionaryVersions[i]));
     }
 
-    const signsListFiles = await Promise.all(signsListRequests);
+    const signsLists = await Promise.all(signsListRequests);
 
     const prefixTreesList = [];
-    for (let i = 0; i < signsListFiles.length; i += 1) {
-      prefixTreesList.push(buildPrefixTree(signsListFiles[i]));
+    for (let i = 0; i < signsLists.length; i += 1) {
+      prefixTreesList.push(buildPrefixTree(signsLists[i]));
     }
 
     const prefixTreesObjects = await Promise.all(prefixTreesList);
