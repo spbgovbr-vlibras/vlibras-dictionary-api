@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import axios from 'axios';
 import env from '../../config/environments/environment';
 import Trie from './Trie';
@@ -6,6 +8,23 @@ import { SIGNS_INDEXER_ERROR } from '../../config/error';
 
 const JSONPrefixTrees = {};
 
+const retrieveLocalSignsList = async function retrieveLocalDictionarySignsList(version) {
+  const signsListFilePath = path.join(env.LOCAL_DICTIONARY_REPOSITORY, `${version}.json`);
+  try {
+    await fs.promises.access(signsListFilePath, fs.R_OK);
+    const signsListFileData = await fs.promises.readFile(signsListFilePath, 'utf-8');
+    const signsList = JSON.parse(signsListFileData);
+
+    if (Array.isArray(signsList) && signsList.length > 0) {
+      return signsList;
+    }
+
+    return [];
+  } catch (error) {
+    return [];
+  }
+};
+
 const retrieveSignsList = async function retrieveDictionarySignsList(version) {
   const signsListURL = new URL(`/api/signs?version=${version}`, env.DICTIONARY_REPOSITORY_URL);
   try {
@@ -13,9 +32,22 @@ const retrieveSignsList = async function retrieveDictionarySignsList(version) {
       signsListURL.href,
       { transformResponse: [(data) => JSON.parse(data)] },
     );
-    return response.data;
+
+    if (response && response.data) {
+      fs.mkdir(env.LOCAL_DICTIONARY_REPOSITORY, { recursive: true }, (err) => {
+        if (!err) {
+          fs.writeFile(
+            path.join(env.LOCAL_DICTIONARY_REPOSITORY, `${version}.json`),
+            JSON.stringify(response.data), () => { },
+          );
+        }
+      });
+      return response.data;
+    }
+
+    return retrieveLocalSignsList(version);
   } catch (error) {
-    throw new Error(error.message);
+    return retrieveLocalSignsList(version);
   }
 };
 
