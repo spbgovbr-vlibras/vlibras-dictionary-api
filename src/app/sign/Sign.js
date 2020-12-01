@@ -25,10 +25,6 @@ const signSchema = new Schema({
     required: true,
     default: 0,
   },
-  requester: {
-    type: String,
-    required: true,
-  },
 }, options);
 
 const Sign = model('Sign', signSchema);

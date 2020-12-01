@@ -1,4 +1,5 @@
 import Sign from '../sign/Sign';
+import SignsRequest from '../sign/SignsRequest';
 
 const metrics = async function serviceMetrics(req, res, next) {
   try {
@@ -12,8 +13,8 @@ const metrics = async function serviceMetrics(req, res, next) {
 
     const queries = {
       signsRequestsCount: [
-        { $match: { createdAt: { $gte: startTime, $lt: endTime } } },
-        { $group: { _id: '$available', count: { $sum: '$hits' } } },
+        { $match: { updatedAt: { $gte: startTime, $lt: endTime } } },
+        { $group: { _id: '$available', count: { $sum: 1 } } },
         { $project: { available: '$_id', count: 1, _id: 0 } },
       ],
       signsCount: [
@@ -51,11 +52,13 @@ const metrics = async function serviceMetrics(req, res, next) {
       ],
     };
 
-    const [signsRequestsCounters,
+    const [
+      signsRequestsCounters,
       signsCounters,
       signsRankingAvailable,
-      signsRankingUnavailable] = await Promise.all([
-      Sign.aggregate(queries.signsRequestsCount),
+      signsRankingUnavailable,
+    ] = await Promise.all([
+      SignsRequest.aggregate(queries.signsRequestsCount),
       Sign.aggregate(queries.signsCount),
       Sign.aggregate(queries.signsRankingAvailable),
       Sign.aggregate(queries.signsRankingUnavailable),
