@@ -1,6 +1,6 @@
-import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
+import axios from 'axios';
 import env from '../../config/environments/environment';
 import Trie from './Trie';
 import { VALIDATION_VALUES } from '../../config/validation';
@@ -8,47 +8,59 @@ import { SIGNS_INDEXER_ERROR } from '../../config/error';
 
 const JSONPrefixTrees = {};
 
-const retrieveSignsList = async function retrieveDictionarySignsList(version) {
-  const signsListURL = new URL(`${version}/signs.txt`, env.DICTIONARY_REPOSITORY_URL);
+const retrieveLocalSignsList = async function retrieveLocalDictionarySignsList(version) {
+  const signsListFilePath = path.join(env.LOCAL_DICTIONARY_REPOSITORY, `${version}.json`);
   try {
-    const response = await axios.get(signsListURL.href, { responseType: 'stream' });
-    const localSignsListPath = path.join(env.LOCAL_DICTIONARY_REPOSITORY, signsListURL.pathname);
+    await fs.promises.access(signsListFilePath, fs.R_OK);
+    const signsListFileData = await fs.promises.readFile(signsListFilePath, 'utf-8');
+    const signsList = JSON.parse(signsListFileData);
 
-    await fs.promises.mkdir(path.dirname(localSignsListPath), { recursive: true });
+    if (Array.isArray(signsList) && signsList.length > 0) {
+      return signsList;
+    }
 
-    const streamWriter = fs.createWriteStream(localSignsListPath);
-    response.data.pipe(streamWriter);
-
-    return new Promise((resolve, reject) => {
-      streamWriter.on('finish', () => {
-        resolve(localSignsListPath);
-      });
-      streamWriter.on('error', (error) => {
-        reject(error);
-      });
-    });
+    return [];
   } catch (error) {
-    throw new Error(error.message);
+    return [];
   }
 };
 
-const buildPrefixTree = function buildJSONPrefixTree(signsListFile) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(signsListFile, 'utf8', (error, data) => {
-      if (error) {
-        return reject(error.message);
-      }
+const retrieveSignsList = async function retrieveDictionarySignsList(version) {
+  const signsListURL = new URL(`/api/signs?version=${version}`, env.DICTIONARY_REPOSITORY_URL);
+  try {
+    const response = await axios.get(
+      signsListURL.href,
+      { transformResponse: [(data) => JSON.parse(data)] },
+    );
 
-      const prefixTree = new Trie();
-      const signsList = data.split('\n');
+    if (response && response.data) {
+      fs.mkdir(env.LOCAL_DICTIONARY_REPOSITORY, { recursive: true }, (err) => {
+        if (!err) {
+          fs.writeFile(
+            path.join(env.LOCAL_DICTIONARY_REPOSITORY, `${version}.json`),
+            JSON.stringify(response.data), () => { },
+          );
+        }
+      });
+      return response.data;
+    }
 
-      for (let i = 0; i < signsList.length; i += 1) {
-        prefixTree.addWord(signsList[i]);
-      }
+    return retrieveLocalSignsList(version);
+  } catch (error) {
+    return retrieveLocalSignsList(version);
+  }
+};
 
-      const JSONPrefixTree = prefixTree.toJSON();
-      return resolve(JSONPrefixTree);
-    });
+const buildPrefixTree = function buildJSONPrefixTree(signsList) {
+  return new Promise((resolve, _reject) => {
+    const prefixTree = new Trie();
+
+    for (let i = 0; i < signsList.length; i += 1) {
+      prefixTree.addWord(signsList[i]);
+    }
+
+    const JSONPrefixTree = prefixTree.toJSON();
+    return resolve(JSONPrefixTree);
   });
 };
 
@@ -61,11 +73,11 @@ const indexSigns = async function indexDictionarySigns() {
       signsListRequests.push(retrieveSignsList(dictionaryVersions[i]));
     }
 
-    const signsListFiles = await Promise.all(signsListRequests);
+    const signsLists = await Promise.all(signsListRequests);
 
     const prefixTreesList = [];
-    for (let i = 0; i < signsListFiles.length; i += 1) {
-      prefixTreesList.push(buildPrefixTree(signsListFiles[i]));
+    for (let i = 0; i < signsLists.length; i += 1) {
+      prefixTreesList.push(buildPrefixTree(signsLists[i]));
     }
 
     const prefixTreesObjects = await Promise.all(prefixTreesList);

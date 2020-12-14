@@ -1,7 +1,7 @@
 {
   "name": "vlibras-dictionary-api",
   "description": "VLibras Dictionary Service API",
-  "version": "2.0.0",
+  "version": "2.1.1",
   "private": true,
   "contributors": [
     "Jonathan Brilhante <jonathan.brilhante@lavid.ufpb.br>",
@@ -51,7 +51,7 @@
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "babel-preset-airbnb": "^4.5.0",
-    "commitizen": "^4.0.4",
+    "commitizen": "^4.2.1",
     "cz-conventional-changelog": "^3.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
