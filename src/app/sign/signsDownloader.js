@@ -5,6 +5,7 @@ import env from '../../config/environments/environment';
 import { signIntensifierSanitizer, signContextSanitizer } from '../util/sanitizer';
 import repositorySignRequest from '../util/repositorySignRequest';
 import Sign from './Sign';
+import SignsRequest from './SignsRequest';
 import { DEFAULT_DICTIONARY_REGION } from '../../config/default';
 import { DICTIONARY_ERROR } from '../../config/error';
 
@@ -29,9 +30,8 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
         region: DEFAULT_DICTIONARY_REGION,
         available: true,
         $inc: { hits: 1 },
-        requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
       },
-      options: { upsert: true },
+      options: { upsert: true, new: true },
     };
 
     return fs.access(signFile, fs.F_OK, async (signNotInLocalError) => {
@@ -73,21 +73,35 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
           });
         } finally {
           try {
-            await Sign.findOneAndUpdate(
+            const sign = await Sign.findOneAndUpdate(
               signUpdateData.query,
               signUpdateData.update,
               signUpdateData.options,
             );
+
+            await SignsRequest.create({
+              // eslint-disable-next-line no-underscore-dangle
+              sign: sign._id,
+              requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+              available: false,
+            });
           } catch (databaseUpdateError) { /* empty */ }
         }
       } else {
         res.download(signFile);
         try {
-          await Sign.findOneAndUpdate(
+          const sign = await Sign.findOneAndUpdate(
             signUpdateData.query,
             signUpdateData.update,
             signUpdateData.options,
           );
+
+          await SignsRequest.create({
+            // eslint-disable-next-line no-underscore-dangle
+            sign: sign._id,
+            requester: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+            available: true,
+          });
         } catch (databaseUpdateError) { /* empty */ }
       }
       return undefined;
