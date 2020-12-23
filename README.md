@@ -118,127 +118,56 @@ These instructions will get you a copy of the project up and running on a live S
 
 ### Deployment Tools
 
-To fully deployment of this project its necessary to have installed and configured the Docker Engine and Kubernetes Container Orchestration.
+To fully deployment of this project its necessary to have installed and configured the Docker Engine and Docker Compose.
 
 ##### [Docker](https://www.docker.com/)
 
-Update the apt package index.
+Download get-docker script.
 
 ```sh
-sudo apt update
+curl -fsSL https://get.docker.com -o get-docker.sh
 ```
 
-Install packages to allow apt to use a repository over HTTPS.
+Install the latest version of Docker.
 
 ```sh
-sudo apt install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+sudo sh get-docker.sh
 ```
 
-Add Docker’s official GPG key.
+##### [Docker Compose](https://docs.docker.com/compose/)
+
+Download the current stable release of Docker Compose.
 
 ```sh
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
 
-Set up the stable repository.
+Apply executable permissions to the binary.
 
 ```sh
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-```
-
-Update the apt package index.
-
-```sh
-sudo apt update
-```
-
-Install the latest version of Docker and containerd.
-
-```sh
-sudo apt install -y docker-ce docker-ce-cli containerd.io
-```
-
-##### [Kubernetes](https://kubernetes.io/)
-
-Update the apt package index.
-
-```sh
-sudo apt update
-```
-
-Install packages to allow apt to use a repository over HTTPS.
-
-```sh
-sudo apt install -y apt-transport-https
-```
-
-Add Kubernetes’s official GPG key.
-
-```sh
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-```
-
-Set up the main repository.
-
-```sh
-echo "deb https://apt.kubernetes.io/ kubernetes-bionic main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
-```
-
-Update the apt package index.
-
-```sh
-sudo apt update
-```
-
-Install the kubectl.
-
-```sh
-sudo apt install -y kubectl
+sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 ### Deploying
 
-Before you deploy the project, you must have MongoDB up and running on your cluster. Execute the following commands to start MongoDB pods:
+Before deploying the project, check the [docker-compose.yml](docker-compose.yml) file and review the following environment variables:
 
-> Note: if you already have MongoDB on your cluster, skip this step.
-
-```sh
-kubectl apply -f kubernetes/mongo.yaml
-```
-
-```sh
-kubectl expose rc mongo-controller --type=<cluster-IP>
-```
-
-After configuring MongoDB, open [dictionary-server-template.yaml](kubernetes/dictionary-server-template.yaml) and set the following environment variables:
-
-```yaml
-- name: DB_HOST
-  value: "<value>"
-- name: DB_PORT
-  value: "<value>"
-- name: DB_NAME
-  value: "<value>"
-- name: DICTIONARY_REPOSITORY_URL
-  value: "<value>"
-- name: DICTIONARY_SIGNS_URL_PATH
-  value: "<value>"
-- name: SIGNS_LIST_UPDATE_INTERVAL
-  value: "<value>"
-- name: LOCAL_DICTIONARY_REPOSITORY
-  value: "<value>"
+```yml
+PORT: 3030
+DB_HOST: mongo
+DB_PORT: 27017
+DB_NAME: "vlibras-db"
+DICTIONARY_REPOSITORY_URL: "http://localhost:8000"
+LOCAL_DICTIONARY_REPOSITORY: /tmp/bundles
+SIGNS_LIST_REFRESH_INTERVAL: 3600000
 ```
 
 > Note: information about these environment variables can be found in [.env.dev](/src/config/environments/.env.dev) file.
 
-Finally, deploy project by running:
+Finally, deploy the project by running:
 
 ```sh
-kubectl apply -f kubernetes/dictionary-server-template.yaml
-```
-
-```sh
-kubectl expose deployment dictionaryapi --port=80 --type=LoadBalancer
+sudo docker-compose up
 ```
 
 ## Contributors
