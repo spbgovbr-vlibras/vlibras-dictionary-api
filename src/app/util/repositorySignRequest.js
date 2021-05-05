@@ -1,3 +1,4 @@
+const util = require('util');
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
@@ -10,8 +11,12 @@ const repositorySignRequest = (
       : new URL(`/api/signs/${version}/${platform}/${sign}`, env.DICTIONARY_REPOSITORY_URL);
 
     try {
+      console.log("repositorySignRequest", (util.inspect(__filename, false, null, true)));
       const response = await axios.get(signURL.href, { responseType: 'stream' });
       const localSignPath = path.join(env.LOCAL_DICTIONARY_REPOSITORY, decodeURI(signURL.pathname));
+      // console.log("response", (util.inspect(response, false, null, true)));
+      console.log(response);
+      console.log("localSignPath", (util.inspect(localSignPath, false, null, true)));
 
       await fs.promises.mkdir(path.dirname(localSignPath), { recursive: true });
 

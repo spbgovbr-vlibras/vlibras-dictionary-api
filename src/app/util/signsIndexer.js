@@ -1,3 +1,4 @@
+const util = require('util');
 import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
@@ -11,6 +12,7 @@ const JSONPrefixTrees = {};
 const retrieveLocalSignsList = async function retrieveLocalDictionarySignsList(version) {
   const signsListFilePath = path.join(env.LOCAL_DICTIONARY_REPOSITORY, `${version}.json`);
   try {
+    console.log("retrieveLocalSignsList", (util.inspect(__filename, false, null, true)));
     await fs.promises.access(signsListFilePath, fs.R_OK);
     const signsListFileData = await fs.promises.readFile(signsListFilePath, 'utf-8');
     const signsList = JSON.parse(signsListFileData);
@@ -28,11 +30,14 @@ const retrieveLocalSignsList = async function retrieveLocalDictionarySignsList(v
 const retrieveSignsList = async function retrieveDictionarySignsList(version) {
   const signsListURL = new URL(`/api/signs?version=${version}`, env.DICTIONARY_REPOSITORY_URL);
   try {
+    console.log("retrieveSignsList", (util.inspect(__filename, false, null, true)));
+    console.log("signsListURL", (util.inspect(signsListURL, false, null, true)));
+
     const response = await axios.get(
       signsListURL.href,
       { transformResponse: [(data) => JSON.parse(data)] },
     );
-
+    console.log("response", (util.inspect(response, false, null, true)));
     if (response && response.data) {
       fs.mkdir(env.LOCAL_DICTIONARY_REPOSITORY, { recursive: true }, (err) => {
         if (!err) {
@@ -66,26 +71,33 @@ const buildPrefixTree = function buildJSONPrefixTree(signsList) {
 
 const indexSigns = async function indexDictionarySigns() {
   try {
+    console.log("indexSigns", (util.inspect(__filename, false, null, true)));
     const { dictionaryVersions } = VALIDATION_VALUES;
 
+    console.log("dictionaryVersions", (util.inspect(dictionaryVersions, false, null, true)));
     const signsListRequests = [];
     for (let i = 0; i < dictionaryVersions.length; i += 1) {
       signsListRequests.push(retrieveSignsList(dictionaryVersions[i]));
     }
+    // console.log("signsListRequests", (util.inspect(signsListRequests, false, null, true)));
 
     const signsLists = await Promise.all(signsListRequests);
+    // console.log("signsLists", (util.inspect(signsLists, false, null, true)));
 
     const prefixTreesList = [];
     for (let i = 0; i < signsLists.length; i += 1) {
       prefixTreesList.push(buildPrefixTree(signsLists[i]));
     }
+    // console.log("prefixTreesList", (util.inspect(prefixTreesList, false, null, true)));
 
     const prefixTreesObjects = await Promise.all(prefixTreesList);
+    // console.log("prefixTreesObjects", (util.inspect(prefixTreesObjects, false, null, true)));
 
     dictionaryVersions.forEach((key, index) => {
       JSONPrefixTrees[key] = prefixTreesObjects[index];
     });
   } catch (error) {
+    // console.log("indexSigns::error", (util.inspect(error, false, null, true)));
     throw new Error(error.message);
   }
 };

@@ -1,3 +1,4 @@
+const util = require('util');
 import createError from 'http-errors';
 import fs from 'fs';
 import path from 'path';
@@ -11,12 +12,14 @@ import { DICTIONARY_ERROR } from '../../config/error';
 
 const signsDownloader = async function signsDownloaderController(req, res, next) {
   try {
+    console.log("signsDownloader", (util.inspect(__filename, false, null, true)));
     let signFile = path.join(
       env.LOCAL_DICTIONARY_REPOSITORY,
       req.params.version,
       req.params.platform,
       req.params.sign,
     );
+    console.log("signFile", (util.inspect(signFile, false, null, true)));
 
     const signUpdateData = {
       query: {
@@ -33,6 +36,7 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
       },
       options: { upsert: true, new: true },
     };
+    // console.log("signUpdateData", (util.inspect(signUpdateData, false, null, true)));
 
     return fs.access(signFile, fs.F_OK, async (signNotInLocalError) => {
       if (signNotInLocalError) {
@@ -113,6 +117,7 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
 
 const regionSignsDownloader = async function regionSignsDownloaderController(req, res, next) {
   try {
+    console.log("regionSignsDownloader", (util.inspect(regionSignsDownloader, false, null, true)));
     let signFile = path.join(
       env.LOCAL_DICTIONARY_REPOSITORY,
       req.params.version,
@@ -137,6 +142,7 @@ const regionSignsDownloader = async function regionSignsDownloaderController(req
       },
       options: { upsert: true },
     };
+    // console.log("signUpdateData", (util.inspect(signUpdateData, false, null, true)));
 
     fs.access(signFile, fs.F_OK, async (signNotInLocalError) => {
       if (signNotInLocalError) {
