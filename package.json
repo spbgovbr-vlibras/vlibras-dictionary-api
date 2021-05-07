@@ -9,7 +9,8 @@
   ],
   "scripts": {
     "build": "babel src --out-dir dist --copy-files --include-dotfiles",
-    "dev": "npm run build && DEBUG=vlibras-dictionary-*:* NODE_ENV=dev node dist/index.js"
+    "dev": "npm run build && DEBUG=vlibras-dictionary-*:* NODE_ENV=dev node dist/index.js",
+    "nodemon": "npm run build && DEBUG=vlibras-dictionary-*:* NODE_ENV=dev nodemon dist/index.js"
   },
   "engines": {
     "node": "10.18.1"
@@ -57,7 +58,8 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "husky": "^4.2.5",
-    "lint-staged": "^10.1.6"
+    "lint-staged": "^10.1.6",
+    "nodemon": "^2.0.7"
   },
   "config": {
     "commitizen": {
