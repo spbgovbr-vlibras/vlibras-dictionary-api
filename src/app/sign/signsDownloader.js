@@ -13,6 +13,8 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
   try {
     let signFile = path.join(
       env.LOCAL_DICTIONARY_REPOSITORY,
+      "api",
+      "signs",
       req.params.version,
       req.params.platform,
       req.params.sign,
@@ -115,6 +117,8 @@ const regionSignsDownloader = async function regionSignsDownloaderController(req
   try {
     let signFile = path.join(
       env.LOCAL_DICTIONARY_REPOSITORY,
+      "api",
+      "signs",
       req.params.version,
       req.params.platform,
       req.params.region,
