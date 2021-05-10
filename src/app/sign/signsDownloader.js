@@ -51,6 +51,10 @@ const signsDownloader = async function signsDownloaderController(req, res, next)
           let alternativeSign = signIntensifierSanitizer(req.params.sign);
           alternativeSign = signContextSanitizer(alternativeSign);
 
+          if (repositorySignRequestError.error) {
+            return next(createError(repositorySignRequestError.error.status, repositorySignRequestError.error));
+          }
+
           if (alternativeSign === req.params.sign) {
             return next(createError(404, DICTIONARY_ERROR.signNotFound));
           }
@@ -157,6 +161,10 @@ const regionSignsDownloader = async function regionSignsDownloaderController(req
 
           let alternativeSign = signIntensifierSanitizer(req.params.sign);
           alternativeSign = signContextSanitizer(alternativeSign);
+
+          if (repositorySignRequestError.error) {
+            return next(createError(repositorySignRequestError.error.status, repositorySignRequestError.error));
+          }
 
           if (alternativeSign === req.params.sign) {
             return next(createError(404, DICTIONARY_ERROR.signNotFound));
