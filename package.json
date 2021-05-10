@@ -5,11 +5,13 @@
   "private": true,
   "contributors": [
     "Jonathan Brilhante <jonathan.brilhante@lavid.ufpb.br>",
-    "Wesnydy Ribeiro <wesnydy@lavid.ufpb.br>"
+    "Wesnydy Ribeiro <wesnydy@lavid.ufpb.br>",
+    "André Pinto Araújo <andre.araujo@lavid.ufpb.br>"
   ],
   "scripts": {
     "build": "babel src --out-dir dist --copy-files --include-dotfiles",
-    "dev": "npm run build && DEBUG=vlibras-dictionary-*:* NODE_ENV=dev node dist/index.js"
+    "dev": "npm run build && DEBUG=vlibras-dictionary-*:* NODE_ENV=dev node dist/index.js",
+    "start": "DEBUG=vlibras-dictionary-*:* NODE_ENV=dev nodemon --exec babel-node src/index.js"
   },
   "engines": {
     "node": "10.18.1"
@@ -44,10 +46,11 @@
     "swagger-ui-express": "^4.1.4"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
+    "@babel/cli": "^7.13.16",
+    "@babel/core": "^7.14.0",
+    "@babel/node": "^7.13.13",
     "@babel/plugin-transform-runtime": "^7.9.0",
-    "@babel/preset-env": "^7.9.5",
+    "@babel/preset-env": "^7.14.1",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "babel-preset-airbnb": "^4.5.0",
@@ -57,7 +60,8 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "husky": "^4.2.5",
-    "lint-staged": "^10.1.6"
+    "lint-staged": "^10.1.6",
+    "nodemon": "^2.0.7"
   },
   "config": {
     "commitizen": {
