@@ -153,7 +153,7 @@ const regionSignsDownloader = async function regionSignsDownloaderController(req
             req.params.version,
             req.params.platform,
             req.params.sign,
-            req.params.region,
+            // req.params.region,
           );
           res.download(signFile);
         } catch (repositorySignRequestError) {
@@ -178,7 +178,7 @@ const regionSignsDownloader = async function regionSignsDownloaderController(req
                   req.params.version,
                   req.params.platform,
                   alternativeSign,
-                  req.params.region,
+                  // req.params.region,
                 );
                 res.download(signFile);
               } catch (repositorySignRequestError2) {
